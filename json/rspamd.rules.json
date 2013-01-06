@@ -1,0 +1,64 @@
+{
+	"rules": [
+		"group 1" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 2" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 3" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 4" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 5" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 6" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 7" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 8" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 9" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+		"group 10" {
+			"rule 1": 10,
+			"rule 2": 20,
+			"rule 3": 30,
+			"rule 4": 40
+		}
+	]
+}
