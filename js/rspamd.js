@@ -167,9 +167,7 @@
 					}
 			});
 
-
-
-		// sliders
+		// action sliders
 		function initActions() {
 			$('#actionsBody .slider').each(function() {
 				$(this).slider({
@@ -189,8 +187,9 @@
 
 		initActions();
 
+		// rule sliders
 		function initRules() {
-			$('#symbolsForm .slider').each(function() {
+			$('#modalForm .slider').each(function() {
 				$(this).slider({
 					from: -20,
 					to: 20,
@@ -206,13 +205,12 @@
 				});
 			}
 
-
 		// upload
 		function createUploader() {
 			var uploader = new qq.FineUploader({
 			element: document.getElementById('bootstrapped-fine-uploader'),
 			request: {
-				endpoint: '//jquery-file-upload.appspot.com/'
+				endpoint: '/'
 				},
 			text: {
 				uploadButton: '<i class="icon-upload icon-white"></i> Select files for upload...'
@@ -232,21 +230,8 @@
 		}
 		window.onload = createUploader;
 
-			////var template = "<li><strong>@{from_user}</strong> {original_text}</li>"
-			//var template = '<div class="control-group"><label class="control-label" title="{group.rules.description}">{group.rules.symbol}</label><div class="controls"><div class="span5"><input type="slider" value="{group.rules.weight}" class="slider" id="{group.rules.symbol}"></div></div></div>';
-			//var container = $('#symbolsBody');
-			//$.getJSON('/rspamd/symbols', function(data) {
-			//	container.html("")
-			//		$.each(data.results, function(i, item){
-			//			container.append($.nano(template, item))
-			//		});
-			//	}
-			//);
-
-		// <form class="form-horizontal" action="#" method="get">
-
-
 		function loadSymbols() {
+			$('#modalForm').empty();
 			var items = [];
 			$.ajax({
 				//crossDomain: true,
@@ -258,14 +243,17 @@
 					},
 				success: function(data) {
 					$.each(data[0].rules, function(i, item) {
-						items.push('<div class="control-group"><label class="control-label symbols-label" title="' + item.description + '">' + item.symbol + '</label><div class="controls"><div class="span5"><input type="slider" value="' + item.weight + '" class="slider" id="' + item.symbol.toLowerCase() + '"></div></div></div>');
+						items.push('<div class="control-group">' +
+							'<label class="control-label symbols-label" title="' + item.description + '">' +  item.symbol + '</label>' +
+							'<div class="controls"><div class="span5"><input type="slider" value="' + item.weight + '" class="slider" id="' + item.symbol.toLowerCase() + '"></div>' +
+							'</div></div>');
 						});
 					$('<div/>', {
 						html: items.join('')
-						}).appendTo('#symbolsForm');
+						}).appendTo('#modalForm');
 						initRules();
 						setTimeout(function(){
-							$('#rules .progress').hide();
+							$('#modalDialog .progress').hide();
 							}, 600);
 					},
 				error:  function(data) {
@@ -281,9 +269,63 @@
 
 		$('#editRules').on('click', function(event) {
 			loadSymbols();
+			$('#modalLabel').text('RSPAMD Rules');
 			});
 
 
+		function getMaps() {
+			var items = [];
+			$.ajax({
+				type: 'GET',
+				dataType: 'json',
+				url: '/rspamd/maps',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('PASSWORD', passwd);
+					},
+				success: function(data) {
+					$.each(data, function(i, item) {
+						items.push('<tr><td>' + item.description + '</td>' +
+									'<td><button class="btn btn-mini btn-primary pull-right" data-toggle="modal" data-target="#modalDialog"' +
+									'data-editable="' + item.editable + '" data-map="' + item.map + '" data-title="' + item.description + '">List</button></td></tr>');
+						});
+					$('<tbody/>', {
+						html: items.join('')
+						}).appendTo('#lists');
+						}
+				});
+			}
+
+		getMaps();
+
+		function createTextarea() {
+			$('#modalForm').append(textarea);
+			}
+
+		$(document).on('click', 'button[data-map]', function () {
+			var map = $(this).data('map');
+			var editable = $(this).data('editable');
+			var title = $(this).data('title');
+			var textarea = $('<textarea class="list-textarea" id="modalTextarea"/>')
+			$.ajax({
+				type: 'GET',
+				dataType: 'text',
+				url: '/rspamd/getmap',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('PASSWORD', passwd);
+					xhr.setRequestHeader('Map', map);
+					},
+				success: function(data) {
+					$('#modalDialog .progress').hide();
+					$('#modalLabel').text(title);
+					$('#modalForm').empty().append(textarea);
+					$('#modalTextarea').val(data);
+					if (editable === false) {
+						$('#modalTextarea').prop('disabled', true);
+						}
+					$('#modalDialog').modal();
+					}
+				});
+			});
 
 
 
