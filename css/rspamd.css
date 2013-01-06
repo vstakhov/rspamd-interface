@@ -218,7 +218,7 @@ a {
 	height:194px;
 	}
 .slider-controls {
-	padding-right:60px !important;
+	padding-right:8em !important;
 	}
 	.jslider {
 		top:13px !important;
@@ -227,7 +227,7 @@ a {
 		display:block !important;
 		float:right;
 		width:4em;
-		margin:5px -6em 0 0;
+		margin:5px -7em 0 0;
 		text-align:center;
 		}
 	.symbols-label {

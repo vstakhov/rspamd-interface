@@ -49,7 +49,6 @@
 			var password = $('#connectPassword').val();
 			var url = '/rspamd/login'; // foreign domain must be setted up as proxypass location
 			$.ajax({
-				//crossDomain: true,
 				type: 'GET',
 				dataType: 'json',
 				url: url,
@@ -79,7 +78,7 @@
 						}
 					}
 				 });
-				return false; // avoid to execute the actual submit of the form.
+				return false;
 			});
 
 
@@ -245,7 +244,7 @@
 					$.each(data[0].rules, function(i, item) {
 						items.push('<div class="control-group">' +
 							'<label class="control-label symbols-label" title="' + item.description + '">' +  item.symbol + '</label>' +
-							'<div class="controls"><div class="span5"><input type="slider" value="' + item.weight + '" class="slider" id="' + item.symbol.toLowerCase() + '"></div>' +
+							'<div class="controls"><div class="span6"><input type="slider" value="' + item.weight + '" class="slider" id="' + item.symbol.toLowerCase() + '"></div>' +
 							'</div></div>');
 						});
 					$('<div/>', {
