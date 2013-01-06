@@ -8,15 +8,10 @@
 	<meta name="author" content="">
 	<link href="./css/bootstrap.css" rel="stylesheet">
 	<link href="./css/bootstrap-responsive.css" rel="stylesheet">
-	<link href="./css/unicorn.main.css" rel="stylesheet">
 	<link href="./css/uniform.css" rel="stylesheet">
 	<link href="./css/rspamd.css" rel="stylesheet">
 	<link href="./css/jquery.slider.min.css" rel="stylesheet">
 	<link href="./css/fineuploader.css" rel="stylesheet">
-	<!-- link rel="apple-touch-icon-precomposed" sizes="144x144" href="../assets/ico/apple-touch-icon-144-precomposed.png" -->
-	<!-- link rel="apple-touch-icon-precomposed" sizes="114x114" href="../assets/ico/apple-touch-icon-114-precomposed.png" -->
-	<!-- link rel="apple-touch-icon-precomposed" sizes="72x72" href="../assets/ico/apple-touch-icon-72-precomposed.png" -->
-	<!-- link rel="apple-touch-icon-precomposed" href="../assets/ico/apple-touch-icon-57-precomposed.png" -->
 	<!-- link rel="shortcut icon" href="../assets/ico/favicon.png" -->
 </head>
 
@@ -39,7 +34,7 @@
 		</div>
 	</div>
 
-	<div class="alert">
+	<div class="alert" style="display:none">
 		<button type="button" class="close" data-dismiss="alert" tutle="Закрыть">&times;</button>
 		<strong>Обновление прошло успешно.</strong>
 	</div>
@@ -52,7 +47,7 @@
 					<div class="span12">
 						<div class="widget-box widget-plain">
 							<div class="widget-content center">
-								<ul class="stats-plain">
+								<ul class="stats-boxes">
 									<li>
 										<h4>36094</h4>
 										<span>Total Visits</span>
@@ -111,74 +106,50 @@
 			</div>
 
 			<div class="tab-pane" id="configuration">
-
-				<div class="row-fluid">
-					<div class="span8">
-						<div class="widget-box">
-							<div class="widget-title">
-								<span class="icon"><i class="icon-tasks"></i></span><h5>Actions</h5>
-							</div>
-							<div class="widget-content actions-content" id="actionsBody">
-								<form class="form-horizontal" action="#" method="get">
-									<div class="control-group">
-										<label class="control-label">Spam</label>
-										<div class="controls slider-controls">
-											<input type="slider" value="20" class="slider" id="sliderSpam">
-										</div>
-									</div>
-									<div class="control-group">
-										<label class="control-label">Probably Spam</label>
-										<div class="controls slider-controls">
-											<input type="slider" value="50" class="slider" id="sliderProbablySpam">
-										</div>
-									</div>
-									<div class="control-group">
-										<label class="control-label">Grey List</label>
-										<div class="controls slider-controls">
-											<input type="slider" value="70" class="slider" id="sliderGreyList">
-										</div>
-									</div>
-								</form>
-							</div>
-						</div>
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"><i class="icon-tasks"></i></span><h5>Actions</h5>
 					</div>
-					<div class="span4">
-						<div class="widget-box">
-							<div class="widget-title">
-								<span class="icon"><i class="icon-list"></i></span><h5>Lists</h5>
+					<div class="widget-content actions-content" id="actionsBody">
+						<form class="form-horizontal" action="#" method="get">
+							<div class="control-group">
+								<label class="control-label">Spam</label>
+								<div class="controls slider-controls">
+									<input type="slider" value="20" class="slider" id="sliderSpam">
+								</div>
 							</div>
-							<div class="widget-content nopadding">
-								<table class="table table-condensed table-hover">
-									<tbody>
-										<tr>
-											<td>White List</td>
-											<td><button class="btn btn-mini btn-primary pull-right">Edit</button></td>
-										</tr>
-										<tr>
-											<td>Black List</td>
-											<td><button class="btn btn-mini btn-primary pull-right">Edit</button></td>
-										</tr>
-										<tr>
-											<td>TLD</td>
-											<td><button class="btn btn-mini btn-primary pull-right">Edit</button></td>
-										</tr>
-									</tbody>
-								</table>
+							<div class="control-group">
+								<label class="control-label">Probably Spam</label>
+								<div class="controls slider-controls">
+									<input type="slider" value="50" class="slider" id="sliderProbablySpam">
+								</div>
 							</div>
-						</div>
-					</div>
-					<div class="span4">
-						<div class="widget-box">
-							<div class="widget-title">
-								<span class="icon"><i class="icon-filter"></i></span><h5>Rules</h5>
+							<div class="control-group">
+								<label class="control-label">Grey List</label>
+								<div class="controls slider-controls">
+									<input type="slider" value="70" class="slider" id="sliderGreyList">
+								</div>
 							</div>
-							<div class="widget-content">
-								<button role="button" class="btn btn-primary" data-target="#rules" data-toggle="modal" id="editRules">Edit</a>
-							</div>
-						</div>
+						</form>
 					</div>
 				</div>
-
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"><i class="icon-list"></i></span><h5>Lists</h5>
+					</div>
+					<div class="widget-content nopadding">
+						<table class="table table-condensed table-hover" id="lists">
+						</table>
+					</div>
+				</div>
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"><i class="icon-filter"></i></span><h5>Rules</h5>
+					</div>
+					<div class="widget-content">
+						<button role="button" class="btn btn-primary" data-target="#modalDialog" data-toggle="modal" id="editRules">Edit</a>
+					</div>
+				</div>
 			</div>
 
 			<div class="tab-pane" id="learning">
@@ -196,9 +167,11 @@
 						</div -->
 					</div>
 					<div class="widget-content">
-						<p>Tune RSPAMD uploading suspected or true spam subjects.</p>
-						<div class="row-fluid nomargin">
-							<div class="span4" id="bootstrapped-fine-uploader"></div>
+						<div class="well nomargin">
+							<p>Tune RSPAMD uploading suspected or true spam subjects.</p>
+							<div class="row-fluid nomargin">
+								<div class="span4" id="bootstrapped-fine-uploader"></div>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -246,27 +219,28 @@
 		</div>
 	</div>
 
+</div>
 
-	<!-- Modals -->
-	<div id="rules" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		<div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-			<h3 id="myModalLabel">RSPAMD Rules</h3>
+<!-- Common modal -->
+<div id="modalDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="modalLabel"></h3>
+	</div>
+	<div class="modal-body">
+		<form class="form-horizontal" id="modalForm">
+		</form>
+		<div class="progress progress-striped active">
+			<div class="bar" style="width:100%;"></div>
 		</div>
-		<div class="modal-body">
-			<form class="form-horizontal" id="symbolsForm">
-			</form>
-			<div class="progress progress-striped active">
-				<div class="bar" style="width:100%;"></div>
-			</div>
-		</div>
-		<div class="modal-footer">
-			<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			<button class="btn btn-primary">Save changes</button>
-		</div>
+	</div>
+	<div class="modal-footer">
+		<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+		<button class="btn btn-primary">Save changes</button>
 	</div>
 </div>
 
+<!-- login modal -->
 <div id="loginForm" class="modal hide login" tabindex="-1" role="dialog" aria-labelledby="RSPAMD Connect" aria-hidden="true">
 	<div class="modal-header">
 		<h3 id="myModalLabel">RSPAMD Connect</h3>
