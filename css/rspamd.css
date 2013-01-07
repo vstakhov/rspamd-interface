@@ -200,7 +200,7 @@ a {
 .chart {
 	position:relative;
 	width:100%;
-	height:350px;
+	height:400px;
 	}
 .chart-buttons {
 	position:absolute;
@@ -263,19 +263,22 @@ input.slider {
 .spinControl.MOZ, .spinControl.IE6, .spinControl.IE7 {  /* small fix */
 	margin-top:		1px;
 	}
-.spinControl input.UP,
-.spinControl input.DOWN {
-	cursor:			pointer;
-	height:			10px;	/* image height */
-	left:			0;
-	position:		absolute;
-	width:			11px;	/* image width */
-	}
-.spinControl input.DOWN {
-	bottom:			0;
-	}
+	.spinControl input.UP,
+	.spinControl input.DOWN {
+		cursor:			pointer;
+		height:			10px;	/* image height */
+		left:			0;
+		position:		absolute;
+		width:			11px;	/* image width */
+		}
+	.spinControl input.DOWN {
+		bottom:			0;
+		}
 
 .list-textarea {
 	width:915px;
 	height:360px;
-}
+	}
+.table.td-bordered td:first-child {
+	border-right:1px solid #ddd;
+	}
