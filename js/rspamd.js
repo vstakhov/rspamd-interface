@@ -303,10 +303,6 @@
 
 		getMaps();
 
-		function createTextarea() {
-			$('#modalForm').append(textarea);
-			}
-
 		$(document).on('click', 'button[data-map]', function () {
 			var map = $(this).data('map');
 			var editable = $(this).data('editable');
