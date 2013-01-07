@@ -6,12 +6,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
+	<link href="./css/fineuploader.css" rel="stylesheet">
 	<link href="./css/bootstrap.css" rel="stylesheet">
 	<link href="./css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="./css/uniform.css" rel="stylesheet">
 	<link href="./css/rspamd.css" rel="stylesheet">
 	<link href="./css/jquery.slider.min.css" rel="stylesheet">
-	<link href="./css/fineuploader.css" rel="stylesheet">
 	<!-- link rel="shortcut icon" href="../assets/ico/favicon.png" -->
 </head>
 
@@ -32,11 +32,6 @@
 				</ul>
 			</div>
 		</div>
-	</div>
-
-	<div class="alert" style="display:none">
-		<button type="button" class="close" data-dismiss="alert" tutle="Закрыть">&times;</button>
-		<strong>Обновление прошло успешно.</strong>
 	</div>
 
 	<div class="container-fluid">
@@ -147,7 +142,7 @@
 						<span class="icon"><i class="icon-filter"></i></span><h5>Rules</h5>
 					</div>
 					<div class="widget-content">
-						<button role="button" class="btn btn-primary" id="editRules">Edit</a>
+						<button role="button" class="btn btn-primary" data-title="Edit Rules" id="editRules">Edit</a>
 					</div>
 				</div>
 			</div>
@@ -156,13 +151,33 @@
 				<div class="widget-box">
 					<div class="widget-title">
 						<span class="icon"><i class="icon-file"></i></span>
-						<h5>Learning</h5>
+						<h5>Learn RSPAMD</h5>
 					</div>
 					<div class="widget-content">
-						<div class="well nomargin">
-							<p>Tune RSPAMD uploading suspected or true spam subjects.</p>
-							<div class="row-fluid nomargin">
-								<div class="span4" id="bootstrapped-fine-uploader"></div>
+						<div class="row-fluid">
+							<div class="span6">
+								<h5>Upload SPAM examples:</h5>
+								<div id="uploadSpamTrigger" class="btn pull-right btn-upload-trigger"><i class="icon-upload"></i> Upload files</div>
+								<div id="uploadSpamForm"></div>
+							</div>
+							<div class="span6">
+								<h5>Upload HAM examples:</h5>
+								<div id="uploadHamTrigger" class="btn pull-right btn-upload-trigger"><i class="icon-upload"></i> Upload files</div>
+								<div id="uploadHamForm"></div>
+							</div>
+						</div>
+					</div>
+					<div class="widget-content">
+						<div class="row-fluid">
+							<div class="span6">
+								<h5>Insert raw SPAM source:</h5>
+								<textarea class="span5 upload-textarea" id="spamTextSource" value=""></textarea>
+								<p><button class="btn pull-right disabled" disabled data-upload="spam"><i class="icon-upload"></i> Upload text</button></p>
+							</div>
+							<div class="span6">
+								<h5>Insert raw HAM source:</h5>
+								<textarea class="span5 upload-textarea" id="hamTextSource" value=""></textarea>
+								<p><button class="btn pull-right disabled" disabled data-upload="ham"><i class="icon-upload"></i> Upload text</button></p>
 							</div>
 						</div>
 					</div>
@@ -173,12 +188,35 @@
 
 				<div class="widget-box">
 					<div class="widget-title">
+						<div class="buttons pull-right">
+							<button class="btn btn-mini" data-update="history"><i class="icon-refresh"></i> Update</button>
+						</div>
 						<span class="icon"><i class="icon-eye-open"></i></span>
 						<h5>History</h5>
 					</div>
 					<div class="widget-content nopadding">
-						<table class="table table-hover td-bordered" id="historyLog">
+						<table class="table table-history table-hover" id="historyLog">
+							<thead>
+								<th>Time</th>
+								<th>ID</th>
+								<th>IP</th>
+								<th>Action</th>
+								<th>Score / Req.&nbsp;score</th>
+								<th>Symbols</th>
+								<th>Size</th>
+								<th>Scan time</th>
+								<th>User</th>
+							</thead>
 						</table>
+						<div class="pager pagination" id="historyPager">
+							<ul>
+								<li><span alt="First" class="firstPage">&laquo;&laquo;</span></li>
+								<li><span alt="Previous" class="prevPage">&laquo;</span></li>
+								<li><b><b class="currentPage"></b> of <b class="totalPages"></b></b></li>
+								<li><span alt="Next" class="nextPage">&raquo;</span></li>
+								<li><span alt="Last" class="lastPage">&raquo;&raquo;</span></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 
@@ -242,6 +280,7 @@
 <script src="./js/jquery.cookie.js"></script>
 <!-- script src="./js/jquery.spincontrol.min.js"></script -->
 <!--[if lte IE 8]><script src="./js/excanvas.min.js"></script><![endif]-->
+<script src="./js/jquery.paginatetable.js"></script>
 <script src="./js/jquery.flot.min.js"></script>
 <script src="./js/jquery.flot.resize.min.js"></script>
 <script src="./js/jquery.slider.min.js"></script>

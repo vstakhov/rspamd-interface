@@ -2,3 +2,20 @@ http://egorkhmelev.github.com/jslider/
 https://github.com/valums/file-uploader/
 https://github.com/flot/flot
 http://www.jeroenvanwarmerdam.nl/content/resources/javascript/jquery/spincontrol/jquery-spincontrol.html
+
+[
+   {
+       "time": "2013-01-07 18:29:51",
+       "id": "201301051303.r05D3xCR019013@svn.freebsd.org",
+       "ip": "127.0.0.1",
+       "action": "no action",
+       "score": -2.81,
+       "required_score": 10,
+       "symbols": "MAILLIST, DATE_IN_PAST, BAYES_HAM",
+       "size": 5782,
+       "scan_time": 26,
+       "user": "hui"
+   }
+]
+/history
+/actions : [{"action":"add header","value":5.00},{"action":"greylist","value":5.00},{"action":"reject","value":10.00}]

@@ -9,12 +9,12 @@
 		$(function(){
 			var hash = window.location.hash;
 			hash && $('a[href="' + hash + '"]').tab('show');
-			$('a[data-toggle]').click(function (e) {
+			$('a[data-toggle]').on('click',function (e) {
 				$(this).tab('show');
 				var scrollmem = $('body').scrollTop();
 				window.location.hash = this.hash;
 				$('html,body').scrollTop(scrollmem);
-			});
+			});	
 		});
 
 		// show login or show admin panes
@@ -28,6 +28,98 @@
 			else {
 				$('html').removeAttr('class');
 				$('#loginForm').hide();
+
+				// receive maps id
+				getMaps();
+				// receive history
+				getHistory();
+				// init sliders on global actions pane
+				initActions();
+
+				// charts
+				$(function getCharts() {
+					var options = {
+						lines: {
+							show: true,
+							fill: true,
+							fillColor: { colors: [ {opacity: 0.5}, {opacity: 0.5} ] }
+							},
+						points: {show: true},
+						xaxis: {
+							mode: "time",
+							timeformat: "%H:%M:%S"
+							},
+						grid: {
+							hoverable: true,
+							clickable: true,
+							tickColor: "#ddd",
+							borderWidth: 1,
+							borderColor: "#cdcdcd",
+							backgroundColor: { colors: ["#fff", "#eee"] }
+							},
+						 colors: ["#1BB2E9"]
+						};
+					var data = [];
+					var placeholder = $('#chart');
+					var alreadyFetched = {};
+
+					$.plot(placeholder, data, options);
+
+					$(placeholder).ready(function () {
+						var dataurl = '/rspamd/graph';
+						function onDataReceived(series) {
+							//var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
+							//if (!alreadyFetched[series.label]) {
+							//	alreadyFetched[series.label] = true;
+							//	data.push(series);
+							//	}
+							$.plot(placeholder, series, options);
+							$(placeholder).removeAttr('style');
+							}
+						$.ajax({
+							url: dataurl,
+							beforeSend: function(xhr) {
+								xhr.setRequestHeader('Password', passwd)
+								},
+							method: 'GET',
+							dataType: 'json',
+							success: onDataReceived,
+							error: function() {
+								$(placeholder).closest('.widget-box').addClass('unavailable');
+								}
+							});
+						});
+					});
+					// show charts tooltip
+					function showTooltip(x, y, contents) {
+						$('<div id="tooltip" class="tooltip in top">' + contents + '</div>').css( {
+							top: y + 5,
+							left: x + 5
+							}).appendTo('body').fadeIn(200);
+						}
+					var previousPoint = null;
+					$("#chart").bind("plothover", function (event, pos, item) {
+						$("#x").text(pos.x.toFixed(2));
+						$("#y").text(pos.y.toFixed(2));
+
+							if (item) {
+								if (previousPoint != item.dataIndex) {
+									previousPoint = item.dataIndex;
+
+									$("#tooltip").remove();
+									var x = item.datapoint[0].toFixed(2),
+										y = item.datapoint[1].toFixed(2);
+
+									showTooltip(item.pageX, item.pageY,
+										item.series.label + ': ' + y);
+								}
+							}
+							else {
+								$("#tooltip").remove();
+								previousPoint = null;
+							}
+					});
+
 				}
 			}
 
@@ -53,7 +145,7 @@
 				dataType: 'json',
 				url: url,
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('PASSWORD', password)
+					xhr.setRequestHeader('Password', password)
 					},
 				success: function(data) {
 					if (data.auth === 'failed') {
@@ -70,101 +162,17 @@
 						}
 					},
 				error:  function(data) {
-					$('.alert').alert();
+					alertMessage('alert-error', 'Oops, password is incorrect');
 					},
 				statusCode: {
 					404: function() {
-						// alert
+						alertMessage('alert-error', 'Cannot login, host not found');
 						}
 					}
 				 });
 				return false;
 			});
 
-
-		// charts
-		$(function () {
-			var options = {
-				lines: {
-					show: true,
-					fill: true,
-					fillColor: { colors: [ {opacity: 0.5}, {opacity: 0.5} ] }
-					},
-				points: {show: true},
-				xaxis: {
-					mode: "time",
-					timeformat: "%H:%M:%S"
-					},
-				grid: {
-					hoverable: true,
-					clickable: true,
-					tickColor: "#ddd",
-					borderWidth: 1,
-					borderColor: "#cdcdcd",
-					backgroundColor: { colors: ["#fff", "#eee"] }
-					},
-				 colors: ["#1BB2E9"]
-				};
-			var data = [];
-			var placeholder = $('#chart');
-			var alreadyFetched = {};
-
-			$.plot(placeholder, data, options);
-
-			$(placeholder).ready(function () {
-				var dataurl = '/rspamd/graph';
-				function onDataReceived(series) {
-					//var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
-					//if (!alreadyFetched[series.label]) {
-					//	alreadyFetched[series.label] = true;
-					//	data.push(series);
-					//	}
-					$.plot(placeholder, series, options);
-					$(placeholder).removeAttr('style');
-					}
-				$.ajax({
-					url: dataurl,
-					beforeSend: function(xhr) {
-						xhr.setRequestHeader('PASSWORD', passwd)
-						},
-					method: 'GET',
-					dataType: 'json',
-					success: onDataReceived,
-					error: function() {
-						$(placeholder).closest('.widget-box').addClass('unavailable');
-						}
-					});
-				});
-			});
-			// show charts tooltip
-			function showTooltip(x, y, contents) {
-				$('<div id="tooltip" class="tooltip in top">' + contents + '</div>').css( {
-					top: y + 5,
-					left: x + 5
-					}).appendTo('body').fadeIn(200);
-				}
-			var previousPoint = null;
-			$("#chart").bind("plothover", function (event, pos, item) {
-				$("#x").text(pos.x.toFixed(2));
-				$("#y").text(pos.y.toFixed(2));
-
-					if (item) {
-						if (previousPoint != item.dataIndex) {
-							previousPoint = item.dataIndex;
-
-							$("#tooltip").remove();
-							var x = item.datapoint[0].toFixed(2),
-								y = item.datapoint[1].toFixed(2);
-
-							showTooltip(item.pageX, item.pageY,
-								item.series.label + ': ' + y);
-						}
-					}
-					else {
-						$("#tooltip").remove();
-						previousPoint = null;
-					}
-			});
 
 		// action sliders
 		function initActions() {
@@ -184,8 +192,6 @@
 				});
 			}
 
-		initActions();
-
 		// rule sliders
 		function initRules() {
 			$('#modalForm .slider').each(function() {
@@ -204,30 +210,131 @@
 				});
 			}
 
-		// upload
-		function createUploader() {
-			var uploader = new qq.FineUploader({
-			element: document.getElementById('bootstrapped-fine-uploader'),
+		// upload spam
+		var spamUploader = new qq.FineUploader({
+			element: $('#uploadSpamForm')[0],
 			request: {
-				endpoint: '/'
+				endpoint: '/rspamd/learnspam',
+				customHeaders: {
+					"Password": passwd
+					}
 				},
+			validation: {
+				allowedExtensions: ['eml', 'msg', 'txt', 'html'],
+				sizeLimit: 52428800
+				},
+			autoUpload: false,
 			text: {
-				uploadButton: '<i class="icon-upload icon-white"></i> Select files for upload...'
+				uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
 				},
-			template: '<div class="qq-uploader span12">' +
+			retry: {
+				enableAuto: true
+				},
+			template: '<div class="qq-uploader">' +
 						'<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
-						'<div class="qq-upload-button btn btn-success" style="width: auto;">{uploadButtonText}</div>' +
+						'<div class="qq-upload-button btn btn-danger">{uploadButtonText}</div>' +
 						'<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
-						'<ul class="qq-upload-list" style="margin-top: 10px; text-align: center;"></ul>' +
+						'<ul class="qq-upload-list"></ul>' +
+						'</div>',
+			classes: {
+				success: 'alert-success',
+				fail: 'alert-error'
+				},
+			debug: true
+			});
+
+		// upload ham
+		var hamUploader = new qq.FineUploader({
+			element: $('#uploadHamForm')[0],
+			request: {
+				endpoint: '/rspamd/learnham',
+				customHeaders: {
+					"Password": passwd
+					}
+				},
+			validation: {
+				allowedExtensions: ['eml', 'msg', 'txt', 'html'],
+				sizeLimit: 52428800
+				},
+			autoUpload: false,
+			text: {
+				uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+				},
+			retry: {
+				enableAuto: true
+				},
+			template: '<div class="qq-uploader">' +
+						'<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
+						'<div class="qq-upload-button btn btn-success">{uploadButtonText}</div>' +
+						'<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+						'<ul class="qq-upload-list"></ul>' +
 						'</div>',
 			classes: {
 				success: 'alert alert-success',
 				fail: 'alert alert-error'
 				},
-				debug: true
+			debug: true
 			});
-		}
-		window.onload = createUploader;
+
+		// upload smap button
+		$('#uploadSpamTrigger').on('click', function() {
+			spamUploader.uploadStoredFiles();
+			});
+
+		// upload ham button
+		$('#uploadHamTrigger').on('click', function() {
+			hamUploader.uploadStoredFiles();
+			});
+
+		// upload text
+		function uploadText(data, source, action) {
+			if (source == 'spam') {
+				var url = '/rspamd/learnspam'
+				}
+			if (source == 'ham') {
+				var url = '/rspamd/learnham'
+				};
+			$.ajax({
+				type: 'POST',
+				url: url,
+				data: data,
+				dataType: 'text',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('Password', passwd);
+					},
+				success: function() {
+					alertMessage('alert-success', 'Data successfully uploaded');
+					cleanTextUpload(source);
+					},
+				error: function() {
+					alertMessage('alert-error', 'Cannot upload data');
+					}
+				});
+			}
+
+		// init upload
+		$('[data-upload]').on('click', function() {
+			var source = $(this).data('upload');
+			var data = $('#' + source + 'TextSource').val();
+			uploadText(data, source);
+			});
+
+		function cleanTextUpload(source) {
+			$('#' + source + 'TextSource').val('');
+			}
+
+		function alertMessage(alertState, alertText) {
+			var alert = $('<div class="alert ' + alertState + '" style="display:none">' + 
+				'<button type="button" class="close" data-dismiss="alert" tutle="Dismiss">&times;</button>' +
+				'<strong>' + alertText + '</strong>').prependTo('body');
+			$(alert).show('fast').delay(3600).hide('fast');
+			}
+
+		$(document).on('keyup', 'textarea', function() {
+			if ($(this).val().length != '') {
+				$(this).siblings('p').find('button').removeAttr('disabled').removeClass('disabled');
+				}
+			});
 
 		function loadSymbols() {
 			// clean form
@@ -238,7 +345,7 @@
 				dataType: 'json',
 				url: '/rspamd/symbols',
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('PASSWORD', passwd);
+					xhr.setRequestHeader('Password', passwd);
 					},
 				success: function(data) {
 					$('#modalDialog').modal();
@@ -257,19 +364,20 @@
 						initRules();
 					},
 				error:  function(data) {
-					// TODO alert
+					alertMessage('alert-error', 'Cannot receive data');
 					},
 				statusCode: {
 					404: function() {
-						// TODO alert
+						alertMessage('alert-error', 'Data source not found');
 						}
 					}
 				 });
 			}
 
 		$('#editRules').on('click', function(event) {
+			var title = $(this).data('title');
 			loadSymbols();
-			$('#modalLabel').text('RSPAMD Rules');
+			$('#modalLabel').text(title);
 			});
 
 
@@ -280,7 +388,10 @@
 				dataType: 'json',
 				url: '/rspamd/maps',
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('PASSWORD', passwd);
+					xhr.setRequestHeader('Password', passwd);
+					},
+				error: function() {
+					alertMessage('alert-error', 'Cannot receive maps data');
 					},
 				success: function(data) {
 					$.each(data, function(i, item) {
@@ -291,7 +402,7 @@
 							var caption = 'Edit List';
 							}
 						items.push('<tr><td>' + item.description + '</td>' +
-							'<td><button class="btn btn-mini btn-primary pull-right" data-toggle="modal" data-target="#modalDialog"' +
+							'<td><button class="btn btn-mini btn-primary pull-right"' +
 							'data-editable="' + item.editable + '" data-map="' + item.map + '" data-title="' + item.description + '">' + caption + '</button></td></tr>');
 						});
 					$('<tbody/>', {
@@ -300,8 +411,6 @@
 						}
 				});
 			}
-
-		getMaps();
 
 		$(document).on('click', 'button[data-map]', function () {
 			var map = $(this).data('map');
@@ -313,8 +422,11 @@
 				dataType: 'text',
 				url: '/rspamd/getmap',
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('PASSWORD', passwd);
+					xhr.setRequestHeader('Password', passwd);
 					xhr.setRequestHeader('Map', map);
+					},
+				error: function() {
+					alertMessage('alert-error', 'Cannot receive list data');
 					},
 				success: function(data) {
 					$('#modalDialog .progress').hide();
@@ -338,21 +450,56 @@
 				dataType: 'json',
 				url: './json/rspamd.history.json',
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('PASSWORD', passwd);
+					xhr.setRequestHeader('Password', passwd);
+					},
+				error: function() {
+					alertMessage('alert-error', 'Cannot receive history');
 					},
 				success: function(data) {
 					$.each(data, function(i, item) {
-						items.push('<tr><td><code>' + item.timestamp + '</code></td>' +
-							'<td><code>' + item.entry +  '</code></td></tr>');
+						if (item.action === 'clean'||'no action') {
+							var action = 'label-success'
+							}
+						if (item.action === 'rewrite subject'||'add heeader'||'probable spam') {
+							var action = 'label-warning'
+							}
+						if (item.action === 'spam') {
+							var action = 'label-important'
+							}
+						if (item.score <= item.required_score) {
+							var score = 'label-success'
+							}
+						if (item.score >= item.required_score) {
+							var score = 'label-important'
+							}
+						items.push(
+							'<tr><td>' + item.time + '</td>' +
+							'<td>' + item.id +  '</td>' +
+							'<td>' + item.ip +  '</td>' +
+							'<td><span class="label ' + action + '">' + item.action +  '</span></td>' +
+							'<td><span class="label ' + score + '">' + item.score +  '</span>' + '&nbsp;' + '<span class="label">' + item.required_score +  '</span></td>' +
+							'<td>' + item.symbols +  '</td>' +
+							'<td>' + item.size +  '</td>' +
+							'<td>' + item.scan_time +  '</td>' +
+							'<td>' + item.user +  '</td></tr>');
 						});
 					$('<tbody/>', {
 						html: items.join('')
-						}).appendTo('#historyLog');
+						}).insertAfter('#historyLog thead');
+						$('#historyLog').paginateTable({ rowsPerPage: 10 })
 						}
 				});
 			}
 
-		getHistory();
+	$('[data-update]').on('click', function() {
+		var table = $('#historyLog');
+		var height = $(table).height();
+		$(table).children('tbody').remove();
+		setTimeout(function() {
+			getHistory();
+			$(table).fadeIn('slow');
+			}, 1200);
+		});
 
 
 	});

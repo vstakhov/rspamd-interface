@@ -723,7 +723,7 @@ h6 {
   font-family: inherit;
   font-weight: bold;
   line-height: 20px;
-  color: inherit;
+  color: #444;
   text-rendering: optimizelegibility;
 }
 
@@ -762,6 +762,10 @@ h4 {
 
 h5 {
   font-size: 14px;
+}
+
+.well h5 {
+  margin-top:0;
 }
 
 h6 {
@@ -3824,14 +3828,20 @@ input[type="submit"].btn.btn-mini {
 }
 
 .alert {
-  padding: 8px 35px 8px 14px;
+  position:fixed;
+  z-index:10;
+  top:41px;
+  right:0;
+  left:0;
+  padding: 8px 0 8px;
   margin:0 0 10px;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
   background-color: #fcf8e3;
-  border: 1px solid #fbeed5;
-  -webkit-border-radius: 4px;
-     -moz-border-radius: 4px;
-          border-radius: 4px;
+  border-bottom: 1px solid #fbeed5;
+}
+.alert strong {
+  display:inline-block;
+  padding-left:35px;
 }
 
 .alert,
@@ -3845,8 +3855,8 @@ input[type="submit"].btn.btn-mini {
 
 .alert .close {
   position: relative;
-  top: -2px;
-  right: -21px;
+  top: 0;
+  right: 9px;
   line-height: 20px;
 }
 
@@ -4925,6 +4935,7 @@ input[type="submit"].btn.btn-mini {
 }
 
 .pagination ul > li > a,
+.pagination ul > li > b,
 .pagination ul > li > span {
   float: left;
   padding: 4px 12px;
@@ -4935,24 +4946,43 @@ input[type="submit"].btn.btn-mini {
   border-left-width: 0;
 }
 
+
+
 .pagination ul > li > a:hover,
 .pagination ul > .active > a,
+.pagination ul > .active > b,
 .pagination ul > .active > span {
   background-color: #f5f5f5;
 }
 
 .pagination ul > .active > a,
+.pagination ul > .active > b,
 .pagination ul > .active > span {
   color: #999999;
   cursor: default;
 }
 
-.pagination ul > .disabled > span,
+.pagination ul > li > b {
+  font-weight:normal;
+  text-decoration: none;
+}
+
+.pagination ul > li > span {
+  color: #0088cc;
+  cursor:pointer;
+}
+.pagination ul > li > span:hover {
+  color: #005580;
+  text-decoration: underline;
+}
+
 .pagination ul > .disabled > a,
-.pagination ul > .disabled > a:hover {
-  color: #999999;
+.pagination ul > .disabled > a:hover,
+.pagination ul > .disabled > span {
+  color: #999999 !important;
   cursor: default;
   background-color: transparent;
+  text-decoration: none !important;
 }
 
 .pagination ul > li:first-child > a,
@@ -5064,7 +5094,7 @@ input[type="submit"].btn.btn-mini {
   clear: both;
 }
 
-.pager li {
+/* .pager li {
   display: inline;
 }
 
@@ -5077,7 +5107,7 @@ input[type="submit"].btn.btn-mini {
   -webkit-border-radius: 15px;
      -moz-border-radius: 15px;
           border-radius: 15px;
-}
+} 
 
 .pager li > a:hover {
   text-decoration: none;
@@ -5100,7 +5130,7 @@ input[type="submit"].btn.btn-mini {
   color: #999999;
   cursor: default;
   background-color: #fff;
-}
+} */
 
 .modal-backdrop {
   position: fixed;
