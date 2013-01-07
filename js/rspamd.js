@@ -230,10 +230,10 @@
 		window.onload = createUploader;
 
 		function loadSymbols() {
+			// clean form
 			$('#modalForm').empty();
 			var items = [];
 			$.ajax({
-				//crossDomain: true,
 				type: 'GET',
 				dataType: 'json',
 				url: '/rspamd/symbols',
@@ -241,6 +241,7 @@
 					xhr.setRequestHeader('PASSWORD', passwd);
 					},
 				success: function(data) {
+					$('#modalDialog').modal();
 					$.each(data[0].rules, function(i, item) {
 						items.push('<div class="control-group">' +
 							'<label class="control-label symbols-label" title="' + item.description + '">' +  item.symbol + '</label>' +
@@ -250,17 +251,17 @@
 					$('<div/>', {
 						html: items.join('')
 						}).appendTo('#modalForm');
+						$('#modalDialog .progress').hide();
+						// show 'Save' button
+						$('#modalSave').show();
 						initRules();
-						setTimeout(function(){
-							$('#modalDialog .progress').hide();
-							}, 600);
 					},
 				error:  function(data) {
-					$('.alert').alert();
+					// TODO alert
 					},
 				statusCode: {
 					404: function() {
-						// alert
+						// TODO alert
 						}
 					}
 				 });
@@ -283,9 +284,15 @@
 					},
 				success: function(data) {
 					$.each(data, function(i, item) {
+						if ((item.editable == false)) {
+							var caption = 'View List';
+							}
+						else {
+							var caption = 'Edit List';
+							}
 						items.push('<tr><td>' + item.description + '</td>' +
-									'<td><button class="btn btn-mini btn-primary pull-right" data-toggle="modal" data-target="#modalDialog"' +
-									'data-editable="' + item.editable + '" data-map="' + item.map + '" data-title="' + item.description + '">List</button></td></tr>');
+							'<td><button class="btn btn-mini btn-primary pull-right" data-toggle="modal" data-target="#modalDialog"' +
+							'data-editable="' + item.editable + '" data-map="' + item.map + '" data-title="' + item.description + '">' + caption + '</button></td></tr>');
 						});
 					$('<tbody/>', {
 						html: items.join('')
@@ -318,15 +325,38 @@
 					$('#modalLabel').text(title);
 					$('#modalForm').empty().append(textarea);
 					$('#modalTextarea').val(data);
+					// hide 'Save' button and disable textarea
 					if (editable === false) {
 						$('#modalTextarea').prop('disabled', true);
+						$('#modalSave').hide();
 						}
 					$('#modalDialog').modal();
 					}
 				});
 			});
 
+		function getHistory() {
+			var items = [];
+			$.ajax({
+				type: 'GET',
+				dataType: 'json',
+				url: './json/rspamd.history.json',
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('PASSWORD', passwd);
+					},
+				success: function(data) {
+					$.each(data, function(i, item) {
+						items.push('<tr><td><code>' + item.timestamp + '</code></td>' +
+							'<td><code>' + item.entry +  '</code></td></tr>');
+						});
+					$('<tbody/>', {
+						html: items.join('')
+						}).appendTo('#historyLog');
+						}
+				});
+			}
 
+		getHistory();
 
 
 	});
