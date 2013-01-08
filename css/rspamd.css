@@ -17,176 +17,8 @@ a {
 	margin-left:-240px;
 	}
 
-/* widget */
-.widget-box {
-	background:none repeat scroll 0 0 #F9F9F9;
-	border-top:1px solid #CDCDCD;
-	border-left:1px solid #CDCDCD;
-	border-right:1px solid #CDCDCD;
-	clear:both;
-	margin-top:16px;
-	margin-bottom:16px;
-	position:relative;
-	}
-.widget-box {
-	background:none repeat scroll 0 0 #F9F9F9;
-	border-top:1px solid #CDCDCD;
-	border-left:1px solid #CDCDCD;
-	border-right:1px solid #CDCDCD;
-	clear:both;
-	margin-top:16px;
-	margin-bottom:16px;
-	position:relative;
-	}
-.widget-box.widget-calendar, .widget-box.widget-chat {
-	overflow:hidden !important;
-	}
-.accordion .widget-box {
-	margin-top:-2px;
-	margin-bottom:0;
-	border-radius:0;
-	}
-.widget-box.widget-plain {
-	background:transparent;
-	border:none;
-	margin-top:0;
-	margin-bottom:0;
-	}
-.widget-title, .modal-header {
-	background-color:#efefef;
-	background-image:-webkit-gradient(linear, 0 0%, 0 100%, from(#fdfdfd), to(#eaeaea));
-	background-image:-webkit-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	background-image:-moz-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	background-image:-ms-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	background-image:-o-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	background-image:-linear-gradient(top, #fdfdfd 0%, #eaeaea 100%);
-	filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#fdfdfd', endColorstr='#eaeaea',GradientType=0 ); /* IE6-9 */
-	border-bottom:1px solid #CDCDCD;
-	height:36px;
-	}
-.widget-title span.icon {
-	border-right:1px solid #cdcdcd;
-	padding:9px 10px 7px 11px;
-	float:left;
-	opacity:.7;
-	}
-.widget-title h5 {
-	color:#666666;
-	text-shadow:0 1px 0 #ffffff;
-	/* float:left; */
-	display:block;
-	font-size:12px;
-	font-weight:bold;
-	padding:12px;
-	line-height:12px;
-	margin:0 0 0 36px;
-	}
-.widget-title .buttons {
-	float:left;
-	margin:7px 7px 0 0;
-	}
-.widget-title .label {
-	padding:3px 5px 2px;
-	float:right;
-	margin:9px 15px 0 0;
-	box-shadow:0 1px 2px rgba(0,0,0,0.3) inset, 0 1px 0 #ffffff;
-	}
-.widget-content {
-	padding:12px 15px;
-	border-bottom:1px solid #cdcdcd;
-	}
-.widget-inner {
-	padding:12px 15px;
-	}
-.stats-plain {
-	width:100%;
-	}
-.stat-boxes, .quick-actions, .quick-actions-horizontal, .stats-plain {
-	display:inline-block;
-	list-style:none outside none;
-	margin:20px 0 10px;
-	text-align:center;
-	}
-.stats-plain {
-	width:100%;
-	}
-.stat-boxes li {
-	background-color:#F6F6F6;
-	background-image:-webkit-gradient(linear, 0 0%, 0 100%, from(#F9F9F9), to(#EDEDED));
-	background-image:-webkit-linear-gradient(top, #F9F9F9 0%, #EDEDED 100%);
-	background-image:-moz-linear-gradient(top, #F9F9F9 0%, #EDEDED 100%);
-	background-image:-ms-linear-gradient(top, #F9F9F9 0%, #EDEDED 100%);
-	background-image:-o-linear-gradient(top, #F9F9F9 0%, #EDEDED 100%);
-	background-image:linear-gradient(top, #F9F9F9 0%, #EDEDED 100%);
-	border:1px solid #d5d5d5;
-	border-radius:4px 4px 4px 4px;
-	box-shadow:0 1px 0 0 #FFFFFF inset, 0 1px 0 rgba(255,255,255,0.4);
-	display:inline-block;
-	line-height:18px;
-	margin:0 10px 10px;
-	padding:0 10px;
-	}
-.stats-plain li {
-	padding:0 30px;
-	display:inline-block;
-	margin:0 10px 20px;
-	}
-.nomargin {	
-	margin:0 !important;
-	}
-.nopadding {
-	padding:0 !important;
-	}
-.activity-list {
-	list-style:none outside none;
-	margin:0;
-	}
-	.activity-list li {
-		border-bottom:1px solid #EEEEEE;
-		display:block;
-		}
-	.activity-list li:last-child {
-		border-bottom:medium none;
-		}
-		.activity-list li a {
-			color:#888888;
-			display:block;
-			padding:7px 10px;
-			}
-		.activity-list li a:hover {
-			background-color:#FBFBFB;
-			}
-			.activity-list li a span {
-				color:#AAAAAA;
-				font-size:11px;
-				font-style:italic;
-				}
-			.activity-list li a i {
-				margin-right:10px;
-				opacity:0.6;
-				vertical-align:middle;
-				}
-.recent-posts, .recent-comments, .recent-users {
-	margin:0;
-	padding:0;
-	}
-	.recent-posts li, .article-post li {
-		border-bottom:1px dotted #AEBDC8;
-		list-style:none outside none;
-		padding:10px;
-		}
-.modal-header {
-	height:auto;
-	padding:8px 15px 5px;
-	}
-	.modal-header h3 {
-		font-size:12px;
-		text-shadow:0 1px 0 #FFFFFF;
-		}
-
 /* local overrides */
-.server-info {
-	display:none;
+.disconnect {
 	margin:9px 0 0;
 	padding-bottom:5px;
 	font-size:11px;
@@ -348,6 +180,9 @@ input.slider {
 	.table-history th {
 		background-color:#efefef;
 		border-left:1px solid #CDCDCD;
+		}
+	.table-history th.header {
+		cursor:pointer;
 		}
 	.table-history th:first-child {
 		border-left:0;
