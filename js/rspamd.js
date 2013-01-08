@@ -240,7 +240,12 @@
 				success: 'alert-success',
 				fail: 'alert-error'
 				},
-			debug: true
+			debug: true,
+			callbacks: {
+				onComplete: function(id, fileName, responseJSON){
+					clearSpamFiles()
+					}
+				}
 			});
 
 		// upload ham
@@ -273,7 +278,12 @@
 				success: 'alert alert-success',
 				fail: 'alert alert-error'
 				},
-			debug: true
+			debug: true,
+			callbacks: {
+				onComplete: function(){
+					clearSpamFiles()
+					}
+				}
 			});
 
 		// upload smap button
@@ -282,9 +292,28 @@
 			});
 
 		// upload ham button
-		$('#uploadHamTrigger').on('click', function() {
+		$('#uploadSpamClean').on('click', function() {
 			hamUploader.uploadStoredFiles();
 			});
+
+		function clearSpamFiles() {
+			spamUploader.clearStoredFiles();
+			}
+
+		function clearHamFiles() {
+			hamUploader.clearStoredFiles();
+			}
+
+		$('.qq-upload-list').on('resize', function(){
+			var height = $(this).height();
+			if (height > 0) {
+				$(this).closest('.span6').find('button').removeAttr('disabled').removeClass('disabled');
+				}
+			else {
+				$(this).closest('.span6').find('button').attr('disabled', 'disabled').addClass('disabled');
+				}
+			}); 
+
 
 		// upload text
 		function uploadText(data, source, action) {
@@ -322,6 +351,8 @@
 		function cleanTextUpload(source) {
 			$('#' + source + 'TextSource').val('');
 			}
+
+
 
 		function alertMessage(alertState, alertText) {
 			var alert = $('<div class="alert ' + alertState + '" style="display:none">' + 
