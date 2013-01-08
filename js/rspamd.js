@@ -228,7 +228,7 @@
 				uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
 				},
 			retry: {
-				enableAuto: true
+				enableAuto: false
 				},
 			template: '<div class="qq-uploader">' +
 						'<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
@@ -242,8 +242,11 @@
 				},
 			debug: true,
 			callbacks: {
-				onComplete: function(id, fileName, responseJSON){
-					clearSpamFiles()
+				onComplete: function(){
+					//clearSpamFiles()
+					},
+				onError: function(){
+					alertMessage('alert-error', 'Cannot upload data');
 					}
 				}
 			});
@@ -252,7 +255,7 @@
 		var hamUploader = new qq.FineUploader({
 			element: $('#uploadHamForm')[0],
 			request: {
-				endpoint: '/rspamd/learnham',
+				endpoint: '/rspamd/learnsddddham',
 				customHeaders: {
 					"Password": passwd
 					}
@@ -275,13 +278,16 @@
 						'<ul class="qq-upload-list"></ul>' +
 						'</div>',
 			classes: {
-				success: 'alert alert-success',
-				fail: 'alert alert-error'
+				success: 'alert-success',
+				fail: 'alert-error'
 				},
 			debug: true,
 			callbacks: {
 				onComplete: function(){
-					clearSpamFiles()
+					// clearHamFiles()
+					},
+				onError: function(){
+					alertMessage('alert-error', 'Cannot upload data');
 					}
 				}
 			});
@@ -292,18 +298,22 @@
 			});
 
 		// upload ham button
-		$('#uploadSpamClean').on('click', function() {
+		$('#uploadHamTrigger').on('click', function() {
 			hamUploader.uploadStoredFiles();
 			});
 
+		// clear spam files list
 		function clearSpamFiles() {
-			spamUploader.clearStoredFiles();
+			qq('.qq-upload-list').hide();
+			//spamUploader.clearStoredFiles();
 			}
 
+		// clear ham files list
 		function clearHamFiles() {
 			hamUploader.clearStoredFiles();
 			}
 
+		// enable or disable upload button
 		$('.qq-upload-list').on('resize', function(){
 			var height = $(this).height();
 			if (height > 0) {
