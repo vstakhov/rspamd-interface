@@ -106,23 +106,29 @@
 						<span class="icon"><i class="icon-tasks"></i></span><h5>Actions</h5>
 					</div>
 					<div class="widget-content actions-content" id="actionsBody">
-						<form class="form-horizontal" action="#" method="get">
+						<form class="form-horizontal" action="#" method="get" id="actionsForm">
 							<div class="control-group">
 								<label class="control-label">Spam</label>
 								<div class="controls slider-controls">
-									<input type="slider" value="20" class="slider" id="sliderSpam">
+									<input type="text" value="20" class="slider">
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label">Probably Spam</label>
 								<div class="controls slider-controls">
-									<input type="slider" value="50" class="slider" id="sliderProbablySpam">
+									<input type="text" value="50" class="slider">
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label">Grey List</label>
 								<div class="controls slider-controls">
-									<input type="slider" value="70" class="slider" id="sliderGreyList">
+									<input type="text" value="70" class="slider">
+								</div>
+							</div>
+							<br>
+							<div class="control-group">
+								<div class="controls slider-controls">
+									<button class="btn disabled" disabled type="submit">Save</button</p>
 								</div>
 							</div>
 						</form>
@@ -197,15 +203,15 @@
 					<div class="widget-content nopadding">
 						<table class="table table-history table-hover" id="historyLog">
 							<thead>
-								<th>Time</th>
-								<th>ID</th>
-								<th>IP</th>
-								<th>Action</th>
-								<th>Score / Req.&nbsp;score</th>
-								<th>Symbols</th>
-								<th>Size</th>
-								<th>Scan time</th>
-								<th>User</th>
+								<th class="col1" title="Time">Time</th>
+								<th class="col2" title="ID">ID</th>
+								<th class="col3" title="IP">IP</th>
+								<th class="col4" title="Action">Action</th>
+								<th class="col5" title="Score / Req.&nbsp;score">Score / Req.&nbsp;score</th>
+								<th class="col6" title="Symbols">Symbols</th>
+								<th class="col7" title="Size">Size</th>
+								<th class="col8" title="Scan Time (ms)"><div class="cell-overflow">Scan Time (ms)</div></th>
+								<th class="col9" title="User">User</th>
 							</thead>
 						</table>
 						<div class="pager pagination" id="historyPager">
@@ -229,13 +235,13 @@
 </div>
 
 <!-- Common modal -->
-<div id="modalDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div id="modalDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
 		<h3 id="modalLabel"></h3>
 	</div>
 	<div class="modal-body">
-		<form class="form-horizontal" id="modalForm">
+		<form class="form-horizontal form-sliders" id="modalForm">
 		</form>
 		<div class="progress progress-striped active">
 			<div class="bar" style="width:100%;"></div>
@@ -243,17 +249,17 @@
 	</div>
 	<div class="modal-footer">
 		<button class="btn" data-dismiss="modal" aria-hidden="true" id="modalClose">Close</button>
-		<button class="btn btn-primary" id="modalSave">Save changes</button>
+		<button class="btn btn-primary disabled" id="modalSave" disabled>Save changes</button>
 	</div>
 </div>
 
 <!-- login modal -->
 <div id="loginForm" class="modal hide login" tabindex="-1" role="dialog" aria-labelledby="RSPAMD Connect" aria-hidden="true">
 	<div class="modal-header">
-		<h3 id="myModalLabel">RSPAMD Connect</h3>
+		<h3>RSPAMD Connect</h3>
 	</div>
 	<div class="modal-body">
-		<form class="form-horizontal" id="connectForm">
+		<form class="form-horizontal " id="connectForm">
 			<!-- div class="control-group">
 				<label class="control-label" for="connectHost">Hostname</label>
 				<div class="controls">
@@ -280,6 +286,8 @@
 <script src="./js/jquery.cookie.js"></script>
 <!-- script src="./js/jquery.spincontrol.min.js"></script -->
 <!--[if lte IE 8]><script src="./js/excanvas.min.js"></script><![endif]-->
+
+<script src="./js/jquery.tablesorter.min.js"></script>
 <script src="./js/jquery.paginatetable.js"></script>
 <script src="./js/jquery.flot.min.js"></script>
 <script src="./js/jquery.flot.resize.min.js"></script>

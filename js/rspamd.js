@@ -19,12 +19,16 @@
 
 		// show login or show admin panes
 		function loggedOrNot() {
+
+			// if not logged - clean cookies, show login dialog
 			if ($.cookie('rspamdlogged') == null ) {
 				$.removeCookie('rspamdsession');
 				$.removeCookie('rspamdpasswd');
 				$('html').addClass('not-logged');
 				$('#loginForm').show();
 				}
+
+			// if logged - prepare body and load charts
 			else {
 				$('html').removeAttr('class');
 				$('#loginForm').hide();
@@ -36,7 +40,7 @@
 				// init sliders on global actions pane
 				initActions();
 
-				// charts
+				// charts for logged
 				$(function getCharts() {
 					var options = {
 						lines: {
@@ -62,9 +66,7 @@
 					var data = [];
 					var placeholder = $('#chart');
 					var alreadyFetched = {};
-
 					$.plot(placeholder, data, options);
-
 					$(placeholder).ready(function () {
 						var dataurl = '/rspamd/graph';
 						function onDataReceived(series) {
@@ -119,8 +121,8 @@
 								previousPoint = null;
 							}
 					});
-
 				}
+
 			}
 
 		loggedOrNot();
@@ -137,7 +139,6 @@
 
 		// execute login
 		$('#connectForm').submit(function() {
-			var form = $(this);
 			var password = $('#connectPassword').val();
 			var url = '/rspamd/login'; // foreign domain must be setted up as proxypass location
 			$.ajax({
@@ -162,11 +163,11 @@
 						}
 					},
 				error:  function(data) {
-					alertMessage('alert-error', 'Oops, password is incorrect');
+					alertMessage('alert-modal alert-error', 'Oops, password is incorrect');
 					},
 				statusCode: {
 					404: function() {
-						alertMessage('alert-error', 'Cannot login, host not found');
+						alertMessage('alert-modal alert-error', 'Cannot login, host not found');
 						}
 					}
 				 });
@@ -187,14 +188,18 @@
 					format: {
 						format: '0'
 						},
-					skin: "round_plastic"
+					skin: "round_plastic",
+					callback: function(value, p2){
+						buttonState('actionsForm', 'enabled');
+						//console.log(this.settings.value);
+						}
 					});
 				});
 			}
 
 		// rule sliders
 		function initRules() {
-			$('#modalForm .slider').each(function() {
+			$('#modalForm :input.slider').each(function() {
 				$(this).slider({
 					from: -20,
 					to: 20,
@@ -205,7 +210,10 @@
 					format: {
 						format: '##.0'
 						},
-					skin: "round_plastic"
+					skin: "round_plastic",
+					onstatechange: function(value){
+						buttonState('modalDialog', 'enabled');
+						}
 					});
 				});
 			}
@@ -255,7 +263,7 @@
 		var hamUploader = new qq.FineUploader({
 			element: $('#uploadHamForm')[0],
 			request: {
-				endpoint: '/rspamd/learnsddddham',
+				endpoint: '/rspamd/learnham',
 				customHeaders: {
 					"Password": passwd
 					}
@@ -368,7 +376,10 @@
 			var alert = $('<div class="alert ' + alertState + '" style="display:none">' + 
 				'<button type="button" class="close" data-dismiss="alert" tutle="Dismiss">&times;</button>' +
 				'<strong>' + alertText + '</strong>').prependTo('body');
-			$(alert).show('fast').delay(3600).hide('fast');
+			$(alert).show();
+			setTimeout(function() {
+				$(alert).hide();
+				}, 3600);
 			}
 
 		$(document).on('keyup', 'textarea', function() {
@@ -377,7 +388,7 @@
 				}
 			});
 
-		function loadSymbols() {
+		function getSymbols() {
 			// clean form
 			$('#modalForm').empty();
 			var items = [];
@@ -393,8 +404,8 @@
 					$.each(data[0].rules, function(i, item) {
 						items.push('<div class="control-group">' +
 							'<label class="control-label symbols-label" title="' + item.description + '">' +  item.symbol + '</label>' +
-							'<div class="controls"><div class="span6"><input type="slider" value="' + item.weight + '" class="slider" id="' + item.symbol.toLowerCase() + '"></div>' +
-							'</div></div>');
+							'<div class="controls slider-controls"><input type="text" value="' + item.weight + '" class="slider" id="' + item.symbol + '"></div>' +
+							'</div>');
 						});
 					$('<div/>', {
 						html: items.join('')
@@ -417,7 +428,8 @@
 
 		$('#editRules').on('click', function(event) {
 			var title = $(this).data('title');
-			loadSymbols();
+			getSymbols();
+			$('#modalDialog').data('list', 'symbols');
 			$('#modalLabel').text(title);
 			});
 
@@ -480,6 +492,7 @@
 						$('#modalSave').hide();
 						}
 					$('#modalDialog').modal();
+					$('#modalDialog').data('list', 'map');
 					}
 				});
 			});
@@ -489,7 +502,7 @@
 			$.ajax({
 				type: 'GET',
 				dataType: 'json',
-				url: './json/rspamd.history.json',
+				url: '/rspamd/history',
 				beforeSend: function (xhr) {
 					xhr.setRequestHeader('Password', passwd);
 					},
@@ -515,19 +528,22 @@
 							}
 						items.push(
 							'<tr><td>' + item.time + '</td>' +
-							'<td>' + item.id +  '</td>' +
+							'<td><div class="cell-overflow" tabindex="1" "title="' + item.id + '">' + item.id +  '</td>' +
 							'<td>' + item.ip +  '</td>' +
 							'<td><span class="label ' + action + '">' + item.action +  '</span></td>' +
-							'<td><span class="label ' + score + '">' + item.score +  '</span>' + '&nbsp;' + '<span class="label">' + item.required_score +  '</span></td>' +
-							'<td>' + item.symbols +  '</td>' +
+							'<td><span class="label ' + score + '">' + item.score + ' / '+ item.required_score +  '</span></td>' +
+							'<td><div class="cell-overflow" tabindex="1" title="' + item.symbols + '">' + item.symbols +  '</div></td>' +
 							'<td>' + item.size +  '</td>' +
 							'<td>' + item.scan_time +  '</td>' +
-							'<td>' + item.user +  '</td></tr>');
+							'<td><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user +  '</div></td></tr>');
 						});
 					$('<tbody/>', {
 						html: items.join('')
 						}).insertAfter('#historyLog thead');
-						$('#historyLog').paginateTable({ rowsPerPage: 10 })
+						$('#historyLog').tablesorter({
+							sortList: [[0,1]]
+							})
+							.paginateTable({ rowsPerPage: 20 }, {textExtraction: function(node) { var pat=/^[0-9]+/; return pat.exec(node.innerHTML); }});
 						}
 				});
 			}
@@ -541,6 +557,78 @@
 			$(table).fadeIn('slow');
 			}, 1200);
 		});
+
+
+	function buttonState(button, action) {
+		if (action === 'enabled') {
+			$('#' + button).find('button').removeAttr('disabled').removeClass('disabled');
+			}
+		if (action === 'disabled') {
+			$('#' + button).find('button').attr('disabled', 'disabled').addClass('disabled').blur();
+			}
+		}
+
+		$(document).on('submit', '#actionsForm', function() {
+			var inputs = $('#actionsForm :input[type="text"]');
+			var url = '/rspamd/saveactions'; // foreign domain must be setted up as proxypass location
+			var values = [];
+			$(inputs).each(function() {
+				values.push(parseFloat($(this).val()));
+				});
+			$.ajax({
+				type: 'POST',
+				dataType: 'application/json',
+				url: url,
+				data: JSON.stringify(values),
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('Password', passwd)
+					},
+				success: function(data) {
+					alertMessage('alert-success', 'Data successfully saved');
+					buttonState('actionsForm', 'disabled');
+					},
+				error:  function(data) {
+					alertMessage('alert-error', 'Oops, password is incorrect');
+					},
+				statusCode: {
+					404: function() {
+						alertMessage('alert-error', 'Cannot login, host not found');
+						}
+					}
+				 });
+				return false;
+			});
+
+		$(document).on('click', '#modalSave', function(event) {
+			var inputs = $('#modalForm :input[type="text"]');
+			var url = '/rspamd/savesymbols'; // foreign domain must be setted up as proxypass location
+			var values = [];
+			$(inputs).each(function() {
+				values.push({ name: $(this).attr('id'), value: parseFloat($(this).val()) });
+				});
+			$.ajax({
+				type: 'POST',
+				dataType: 'application/json',
+				url: url,
+				data: JSON.stringify(values),
+				beforeSend: function (xhr) {
+					xhr.setRequestHeader('Password', passwd)
+					},
+				success: function() {
+					alertMessage('alert-modal alert-success', 'Data successfully saved');
+					},
+				error:  function(data) {
+					alertMessage('alert-modal alert-error', 'Oops, password is incorrect');
+					},
+				statusCode: {
+					404: function() {
+						alertMessage('alert-modal alert-error', 'Cannot login, host not found');
+						}
+					}
+				 });
+				$('#modalDialog').modal('hide');
+				return false;
+			});
 
 
 	});

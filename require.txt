@@ -2,6 +2,7 @@ http://egorkhmelev.github.com/jslider/
 https://github.com/valums/file-uploader/
 https://github.com/flot/flot
 http://www.jeroenvanwarmerdam.nl/content/resources/javascript/jquery/spincontrol/jquery-spincontrol.html
+http://zacharyrankin.com/2012/06/20/submit-only-form-fields-that-have-changed-without-ajax.html
 
 [
    {
