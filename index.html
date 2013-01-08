@@ -23,7 +23,7 @@
 		<div class="navbar-inner">
 			<div class="container-fluid">
 				<a class="brand" href="."><b>RSPAMD Admin</b></a>
-				<div id="serverInfo" class="pull-right server-info">Version: <span></span>, Uptime: <span></span></div>
+				<a href="./" id="disconnect" class="pull-right disconnect">Disconnect</a>
 				<ul class="nav">
 					<li class="active"><a href="#status" data-toggle="tab">Status</a></li>
 					<li><a href="#configuration" data-toggle="tab">Configuration</a></li>
@@ -38,43 +38,68 @@
 
 		<div class="tab-content">
 			<div class="tab-pane active" id="status">
-				<!-- div class="row-fluid">
+				<div class="row-fluid">
 					<div class="span12">
 						<div class="widget-box widget-plain">
-							<div class="widget-content center">
-								<ul class="stats-boxes">
-									<li>
-										<h4>36094</h4>
-										<span>Total Visits</span>
-									</li>
-									<li>
-										<h4>1433</h4>
-										<span>Users Registered</span>
-									</li>
-									<li>
-										<h4>8650</h4>
-										<span>Completed Orders</span>
-									</li>
-									<li>
-										<h4>29</h4>
-										<span>Pending Orders</span>
-									</li>
-								</ul>
-							</div>
+							<ul id="statWidgets" class="stat-boxes" style="display:none">
+								<li class="stat-box pull-right">
+									<div class="widget">
+										<div class="left">
+											<strong class="widget-uptime"></strong>
+											Server Uptime
+										</div>
+										<div class="right">
+											<strong class="widget-version"></strong>
+											RSPAMD Version
+										</div>
+									</div>
+								</li>
+								<li class="stat-box">
+									<div class="widget">
+										<strong class="widget-greylist"></strong>
+										Greylist
+									</div>
+								</li>
+								<li class="stat-box">
+									<div class="widget">
+										<strong class="widget-learned"></strong>
+										Learned
+									</div>
+								</li>
+								<li class="stat-box">
+									<div class="widget">
+										<strong class="widget-probable"></strong>
+										Probable
+									</div>
+								</li>
+								<li class="stat-box">
+									<div class="widget">
+										<strong class="widget-reject"></strong>
+										Rejected
+									</div>
+								</li>
+								<li class="stat-box">
+									<div class="widget">
+										<strong class="widget-reject"></strong>
+										Scanned
+									</div>
+								</li>
+							</ul>
 						</div>
 					</div>
-				</div -->
+				</div>
+
 				<div class="widget-box">
 					<div class="widget-title">
 						<span class="icon"><i class="icon-signal"></i></span>
 						<h5>Statistics</h5>
-						<div class="chart-buttons">
+						<!-- div class="chart-buttons">
 							<div class="btn-group" data-toggle="buttons-radio">
 								<button id="hour" class="btn btn-mini active" data-toggle="tab">Hour</button>
 								<button id="week" class="btn btn-mini" data-toggle="tab">Week</button>
 								<button id="year" class="btn btn-mini" data-toggle="tab">Year</button>
 							</div>
-						</div>
+						</div -->
 					</div>
 					<div class="widget-content">
 						<div class="row-fluid row-chart">
