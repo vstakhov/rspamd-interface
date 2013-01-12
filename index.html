@@ -7,27 +7,31 @@
 	<meta name="description" content="">
 	<meta name="author" content="">
 	<link href="./css/fineuploader.css" rel="stylesheet">
+	<link href="./css/jquery.slider.min.css" rel="stylesheet">
 	<link href="./css/bootstrap.css" rel="stylesheet">
 	<link href="./css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="./css/uniform.css" rel="stylesheet">
 	<link href="./css/rspamd.css" rel="stylesheet">
-	<link href="./css/jquery.slider.min.css" rel="stylesheet">
+	<!-- link href="./css/jquery.slider.min.css" rel="stylesheet" -->
 	<!-- link rel="shortcut icon" href="../assets/ico/favicon.png" -->
 </head>
 
 <body>
 
-<div class="main">
+<div id="mainUI">
 
 	<div class="navbar navbar-fixed-top">
 		<div class="navbar-inner">
 			<div class="container-fluid">
 				<a class="brand" href="."><b>RSPAMD Admin</b></a>
-				<a href="./" id="disconnect" class="pull-right disconnect">Disconnect</a>
+				<ul class="nav pull-right">
+					<li><a href="#" data-toggle="tab" id="disconnect">Disconnect</a></li>
+				</ul>
 				<ul class="nav">
 					<li class="active"><a href="#status" data-toggle="tab">Status</a></li>
 					<li><a href="#configuration" data-toggle="tab">Configuration</a></li>
 					<li><a href="#learning" data-toggle="tab">Learning</a></li>
+					<li><a href="#scan" data-toggle="tab">Scan</a></li>
 					<li><a href="#history" data-toggle="tab">History</a></li>
 				</ul>
 			</div>
@@ -68,19 +72,6 @@
 						</div>
 					</div>
 				</div>
-				<!--div class="widget-box">
-					<div class="widget-title">
-						<span class="icon"><i class="icon-star"></i></span>
-						<h5>Top rules</h5>
-					</div>
-					<div class="widget-content nopadding">
-						<ul class="activity-list">
-							<li><a href="#rule11">Rule 11</a></li>
-							<li><a href="#rule25">Rule 25</a></li>
-							<li><a href="#rule666">Rule 666</a></li>
-						</ul>
-					</div>
-				</div -->
 			</div>
 
 			<div class="tab-pane" id="configuration">
@@ -89,29 +80,29 @@
 						<span class="icon"><i class="icon-tasks"></i></span><h5>Actions</h5>
 					</div>
 					<div class="widget-content actions-content" id="actionsBody">
-						<form class="form-horizontal" action="#" method="get" id="actionsForm">
+						<form class="form-horizontal" id="actionsForm">
 							<div class="control-group">
 								<label class="control-label">Spam</label>
 								<div class="controls slider-controls">
-									<input type="text" value="20" class="slider">
+									<input type="slider" value="20" class="slider">
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label">Probably Spam</label>
 								<div class="controls slider-controls">
-									<input type="text" value="50" class="slider">
+									<input type="slider" value="50" class="slider">
 								</div>
 							</div>
 							<div class="control-group">
 								<label class="control-label">Grey List</label>
 								<div class="controls slider-controls">
-									<input type="text" value="70" class="slider">
+									<input type="slider" value="70" class="slider">
 								</div>
 							</div>
 							<br>
 							<div class="control-group">
 								<div class="controls slider-controls">
-									<button class="btn disabled" disabled type="submit">Save</button</p>
+									<button class="btn" type="submit">Save default actions</button</p>
 								</div>
 							</div>
 						</form>
@@ -119,19 +110,19 @@
 				</div>
 				<div class="widget-box">
 					<div class="widget-title">
-						<span class="icon"><i class="icon-list"></i></span><h5>Lists</h5>
+						<span class="icon"><i class="icon-filter"></i></span><h5>Rules</h5>
 					</div>
-					<div class="widget-content nopadding">
-						<table class="table table-condensed table-hover" id="lists">
-						</table>
+					<div class="widget-content" id="TMPLRULES">
+						<button role="button" class="btn btn-primary" data-toggle="modal" data-source="#symbolsForm" data-target="#modalDialog" data-title="Symbols">Edit Rules</button>
 					</div>
 				</div>
 				<div class="widget-box">
 					<div class="widget-title">
-						<span class="icon"><i class="icon-filter"></i></span><h5>Rules</h5>
+						<span class="icon"><i class="icon-list"></i></span><h5>Lists</h5>
 					</div>
-					<div class="widget-content">
-						<button role="button" class="btn btn-primary" data-title="Edit Rules" id="editRules">Edit</a>
+					<div class="widget-content nopadding">
+						<table class="table table-condensed table-hover" id="listMaps">
+						</table>
 					</div>
 				</div>
 			</div>
@@ -144,30 +135,62 @@
 					</div>
 					<div class="widget-content">
 						<div class="row-fluid">
-							<form class="span6" action="#" id="uploadSpamForm">
+							<form class="span6 upload-form" id="uploadSpamForm">
 								<h5>Upload SPAM examples:</h5>
-								<button id="uploadSpamTrigger" class="btn pull-right btn-upload-trigger disabled" disabled><i class="icon-upload"></i> Upload files</button>
+								<button id="uploadSpamTrigger" class="btn pull-right btn-upload-trigger"><i class="icon-upload"></i> Upload files</button>
 								<div id="uploadSpamFiles"></div>
 							</form>
-							<form class="span6" action="#" id="uploadHamForm">
+							<form class="span6 upload-form" id="uploadHamForm">
 								<h5>Upload HAM examples:</h5>
-								<button id="uploadHamTrigger" class="btn pull-right btn-upload-trigger disabled" disabled><i class="icon-upload"></i> Upload files</button>
+								<button id="uploadHamTrigger" class="btn pull-right btn-upload-trigger"><i class="icon-upload"></i> Upload files</button>
 								<div id="uploadHamFiles"></div>
 							</form>
 						</div>
 					</div>
 					<div class="widget-content">
 						<div class="row-fluid">
-							<div class="span6">
+							<form class="span6">
 								<h5>Insert raw SPAM source:</h5>
 								<textarea class="span5 upload-textarea" id="spamTextSource" value=""></textarea>
-								<p><button class="btn pull-right disabled" disabled data-upload="spam"><i class="icon-upload"></i> Upload text</button></p>
-							</div>
-							<div class="span6">
+								<p><button class="btn pull-right" data-upload="spam"><i class="icon-upload"></i> Upload text</button></p>
+							</form>
+							<form class="span6">
 								<h5>Insert raw HAM source:</h5>
 								<textarea class="span5 upload-textarea" id="hamTextSource" value=""></textarea>
-								<p><button class="btn pull-right disabled" disabled data-upload="ham"><i class="icon-upload"></i> Upload text</button></p>
-							</div>
+								<p><button class="btn pull-right" data-upload="ham"><i class="icon-upload"></i> Upload text</button></p>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="tab-pane" id="scan">
+				<div class="widget-box">
+					<div class="widget-title">
+						<span class="icon"><i class="icon-info-sign"></i></span>
+						<h5>Online scan suspected message</h5>
+					</div>
+					<div class="widget-content">
+						<h5>Paste and scan suspicious message</h5>
+						<div class="row-fluid">
+							<form class="span12 nomargin" id="scanForm">
+								<textarea class="span12 scan-textarea"></textarea>
+								<p><button class="btn btn-primary" id="scanForm">Scan message</button></p>
+							</form>
+						</div>
+						<div class="alert alert-success alert-block fade in">
+							<button type="button" class="close" data-dismiss="alert">×</button>
+							<h4 class="alert-heading">Results for host: localhost:11337</h4>
+							<p>
+								default: False <span class="label label-success">4.00 / 10.00</span><br>
+								Action: no action<br>
+								Symbols: MAILLIST(-2.00)(majordomo), DATE_IN_PAST(1.00), BAYES_HAM(-3.00)(1.00)<br>
+								<br>
+								Urls: 1090500.py, 1090600.py, pkg-install.in, static.moinmo.in, svnweb.freebsd.org<br>
+								Emails: perky@python.or.kr<br>
+								Message-ID: 201301051303.r05D3xCR019013@svn.freebsd.org
+							</p>
+							<p><button class="btn" data-dismiss="close">Close</button></p>
 						</div>
 					</div>
 				</div>
@@ -221,27 +244,25 @@
 <div id="modalDialog" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
 	<div class="modal-header">
 		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-		<h3 id="modalLabel"></h3>
+		<h3 id="modalTitle"></h3>
 	</div>
-	<div class="modal-body">
-		<form class="form-horizontal form-sliders" id="modalForm">
-		</form>
+	<div class="modal-body" id="modalBody">
 		<div class="progress progress-striped active">
 			<div class="bar" style="width:100%;"></div>
 		</div>
 	</div>
 	<div class="modal-footer">
 		<button class="btn" data-dismiss="modal" aria-hidden="true" id="modalClose">Close</button>
-		<button class="btn btn-primary disabled" id="modalSave" disabled>Save changes</button>
+		<button class="btn btn-primary" id="modalSave">Save changes</button>
 	</div>
 </div>
 
 <!-- login modal -->
-<div id="loginForm" class="modal hide login" tabindex="-1" role="dialog" aria-labelledby="RSPAMD Connect" aria-hidden="true">
+<div id="connectDialog" class="modal hide login" tabindex="-1" role="dialog" aria-labelledby="RSPAMD Connect" aria-hidden="true">
 	<div class="modal-header">
 		<h3>RSPAMD Connect</h3>
 	</div>
-	<div class="modal-body">
+	<div class="modal-body" id="connectBody">
 		<form class="form-horizontal " id="connectForm">
 			<!-- div class="control-group">
 				<label class="control-label" for="connectHost">Hostname</label>
@@ -252,7 +273,7 @@
 			<div class="control-group">
 				<label class="control-label" for="connectPassword">Password</label>
 				<div class="controls">
-					<input type="password" name="connectPassword" id="connectPassword" placeholder="Password">
+					<input class="span2" type="password" id="connectPassword" id="connectPassword" placeholder="Password">
 				</div>
 			</div>
 			<div class="control-group">
@@ -264,19 +285,23 @@
 	</div>
 </div>
 
-<script src="./js/jquery.min.js"></script>
-<script src="./js/bootstrap.min.js"></script>
-<script src="./js/jquery.cookie.js"></script>
-<!-- script src="./js/jquery.spincontrol.min.js"></script -->
-<!--[if lte IE 8]><script src="./js/excanvas.min.js"></script><![endif]-->
+<div id="backDrop" class="modal-backdrop fade in" style="display:none"></div>
 
-<script src="./js/jquery.tablesorter.min.js"></script>
-<script src="./js/jquery.paginatetable.js"></script>
+<div id="outputBuffer" class="hidden">
+</div>
+
+<script src="./js/vendor/jquery-1.8.3.min.js"></script>
+<script src="./js/jquery.cookie.js"></script>
+<script src="./js/vendor/bootstrap.min.js"></script>
 <script src="./js/jquery.flot.min.js"></script>
 <script src="./js/jquery.flot.resize.min.js"></script>
 <script src="./js/jquery.slider.min.js"></script>
-<script src="./js/jquery.fineuploader-3.1.1.min.js"></script>
-
+<script src="./js/jquery.tablesorter.min.js"></script>
+<script src="./js/jquery.paginatetable.js"></script>
+<script src="./js/vendor/kendo.core.min.js"></script>
+<script src="./js/vendor/kendo.numerictextbox.min.js"></script>
+<script src="./js/jquery.fineuploader.min.js"></script>
+<!--[if lte IE 8]><script src="./js/excanvas.min.js"></script><![endif]-->
 <script src="./js/rspamd.js"></script>
 
 </body>
