@@ -42,48 +42,6 @@
 					<div class="span12">
 						<div class="widget-box widget-plain">
 							<ul id="statWidgets" class="stat-boxes" style="display:none">
-								<li class="stat-box pull-right">
-									<div class="widget">
-										<div class="left">
-											<strong class="widget-uptime"></strong>
-											Server Uptime
-										</div>
-										<div class="right">
-											<strong class="widget-version"></strong>
-											RSPAMD Version
-										</div>
-									</div>
-								</li>
-								<li class="stat-box">
-									<div class="widget">
-										<strong class="widget-greylist"></strong>
-										Greylist
-									</div>
-								</li>
-								<li class="stat-box">
-									<div class="widget">
-										<strong class="widget-learned"></strong>
-										Learned
-									</div>
-								</li>
-								<li class="stat-box">
-									<div class="widget">
-										<strong class="widget-probable"></strong>
-										Probable
-									</div>
-								</li>
-								<li class="stat-box">
-									<div class="widget">
-										<strong class="widget-reject"></strong>
-										Rejected
-									</div>
-								</li>
-								<li class="stat-box">
-									<div class="widget">
-										<strong class="widget-reject"></strong>
-										Scanned
-									</div>
-								</li>
 							</ul>
 						</div>
 					</div>
@@ -186,16 +144,16 @@
 					</div>
 					<div class="widget-content">
 						<div class="row-fluid">
-							<div class="span6">
+							<form class="span6" action="#" id="uploadSpamForm">
 								<h5>Upload SPAM examples:</h5>
 								<button id="uploadSpamTrigger" class="btn pull-right btn-upload-trigger disabled" disabled><i class="icon-upload"></i> Upload files</button>
-								<div id="uploadSpamForm"></div>
-							</div>
-							<div class="span6">
+								<div id="uploadSpamFiles"></div>
+							</form>
+							<form class="span6" action="#" id="uploadHamForm">
 								<h5>Upload HAM examples:</h5>
 								<button id="uploadHamTrigger" class="btn pull-right btn-upload-trigger disabled" disabled><i class="icon-upload"></i> Upload files</button>
-								<div id="uploadHamForm"></div>
-							</div>
+								<div id="uploadHamFiles"></div>
+							</form>
 						</div>
 					</div>
 					<div class="widget-content">
