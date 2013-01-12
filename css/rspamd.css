@@ -237,6 +237,7 @@ input::-webkit-inner-spin-button {
 		-o-text-overflow:ellipsis;
 		text-overflow:ellipsis;
 		}
+	.table-history .cell-overflow:hover,
 	.table-history .cell-overflow:focus {
 		margin:-3px -8px;
 		padding:2px 7px 3px;

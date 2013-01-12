@@ -1,3 +1,0 @@
-* piechart
-* save maps
-* widgets

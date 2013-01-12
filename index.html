@@ -12,8 +12,7 @@
 	<link href="./css/bootstrap-responsive.css" rel="stylesheet">
 	<link href="./css/uniform.css" rel="stylesheet">
 	<link href="./css/rspamd.css" rel="stylesheet">
-	<!-- link href="./css/jquery.slider.min.css" rel="stylesheet" -->
-	<!-- link rel="shortcut icon" href="../assets/ico/favicon.png" -->
+	<!-- link rel="shortcut icon" href="favicon.ico" -->
 </head>
 
 <body>
@@ -65,7 +64,7 @@
 					</div>
 					<div class="widget-content">
 						<div class="row-fluid row-chart">
-							<div class="chart" id="chart" style="visibility:hidden">
+							<div class="chart" id="chart">
 								<span class="notice">Loading..</span>
 								<noscript>Please enable Javascript</noscript>
 							</div>
@@ -102,7 +101,7 @@
 							<br>
 							<div class="control-group">
 								<div class="controls slider-controls">
-									<button class="btn" type="submit">Save default actions</button</p>
+									<button class="btn" type="submit">Save actions</button</p>
 								</div>
 							</div>
 						</form>
@@ -112,7 +111,7 @@
 					<div class="widget-title">
 						<span class="icon"><i class="icon-filter"></i></span><h5>Rules</h5>
 					</div>
-					<div class="widget-content" id="TMPLRULES">
+					<div class="widget-content">
 						<button role="button" class="btn btn-primary" data-toggle="modal" data-source="#symbolsForm" data-target="#modalDialog" data-title="Symbols">Edit Rules</button>
 					</div>
 				</div>
@@ -174,11 +173,11 @@
 						<h5>Paste and scan suspicious message</h5>
 						<div class="row-fluid">
 							<form class="span12 nomargin" id="scanForm">
-								<textarea class="span12 scan-textarea"></textarea>
-								<p><button class="btn btn-primary" id="scanForm">Scan message</button></p>
+								<textarea class="span12 scan-textarea" id="scanTextSource"></textarea>
+								<p><button class="btn btn-primary" data-upload="scan">Scan message</button></p>
 							</form>
 						</div>
-						<div class="alert alert-success alert-block fade in">
+						<div class="alert alert-success alert-block fade in" style="display:none">
 							<button type="button" class="close" data-dismiss="alert">×</button>
 							<h4 class="alert-heading">Results for host: localhost:11337</h4>
 							<p>
@@ -264,12 +263,12 @@
 	</div>
 	<div class="modal-body" id="connectBody">
 		<form class="form-horizontal " id="connectForm">
-			<!-- div class="control-group">
+			<div class="control-group">
 				<label class="control-label" for="connectHost">Hostname</label>
 				<div class="controls">
-					<input type="text" name="connectHost" id="connectHost" placeholder="Hostname">
+					<input class="span2" type="text" id="connectHost" placeholder="Hostname">
 				</div>
-			</div -->
+			</div>
 			<div class="control-group">
 				<label class="control-label" for="connectPassword">Password</label>
 				<div class="controls">
@@ -291,16 +290,16 @@
 </div>
 
 <script src="./js/vendor/jquery-1.8.3.min.js"></script>
-<script src="./js/jquery.cookie.js"></script>
 <script src="./js/vendor/bootstrap.min.js"></script>
-<script src="./js/jquery.flot.min.js"></script>
-<script src="./js/jquery.flot.resize.min.js"></script>
-<script src="./js/jquery.slider.min.js"></script>
-<script src="./js/jquery.tablesorter.min.js"></script>
-<script src="./js/jquery.paginatetable.js"></script>
 <script src="./js/vendor/kendo.core.min.js"></script>
 <script src="./js/vendor/kendo.numerictextbox.min.js"></script>
+<script src="./js/jquery.cookie.js"></script>
 <script src="./js/jquery.fineuploader.min.js"></script>
+<script src="./js/jquery.slider.min.js"></script>
+<script src="./js/jquery.flot.min.js"></script>
+<script src="./js/jquery.flot.resize.min.js"></script>
+<script src="./js/jquery.tablesorter.min.js"></script>
+<script src="./js/jquery.paginatetable.js"></script>
 <!--[if lte IE 8]><script src="./js/excanvas.min.js"></script><![endif]-->
 <script src="./js/rspamd.js"></script>
 
