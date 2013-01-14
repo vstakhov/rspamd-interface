@@ -21,11 +21,13 @@
 	}
 
 	// @return password
-	if (sessionState()) {
-		if (!supportsSessionStorage()) {
-			var password = $.cookie('rspamdpasswd');
-		} else {
-			var password = sessionStorage.getItem('Password');
+	function getPassword() {
+		if (sessionState()) {
+			if (!supportsSessionStorage()) {
+				return password = $.cookie('rspamdpasswd');
+			} else {
+				return password = sessionStorage.getItem('Password');
+			}
 		}
 	}
 
@@ -59,7 +61,7 @@
 			type: 'GET',
 			url: '/rspamd/login',
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', password)
+				xhr.setRequestHeader('Password', getPassword())
 			},
 			success: function(data) {
 				if (data.auth === 'failed') {
@@ -77,7 +79,7 @@
 			type: 'GET',
 			url: '/rspamd/login',
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', password)
+				xhr.setRequestHeader('Password', getPassword())
 			},
 			success: function(data) {
 				saveCredentials(data, password);
@@ -95,6 +97,16 @@
 			sessionStorage.setItem('Password', password);
 			sessionStorage.setItem('Credentials', JSON.stringify(data));
 		}
+	}
+
+	// @update credentials
+	function saveActions(data) {
+		if (!supportsSessionStorage()) {
+			$.cookie('rspamdactions', data);
+		} else {
+			sessionStorage.setItem('Actions', JSON.stringify(data));
+		}
+		//console.log('Maps saved');
 	}
 
 	// @update credentials
@@ -147,13 +159,14 @@
 			dataType: 'json',
 			url: '/rspamd/maps',
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Password', password)
+				xhr.setRequestHeader('Password', getPassword())
 				},
 			error: function() {
 				alertMessage('alert-error', 'Cannot receive maps data');
 			},
 			success: function(data) {
 				saveMaps(data);
+				getMapById();
 				$.each(data, function(i, item) {
 					if ((item.editable == false)) {
 						var caption = 'View';
@@ -197,23 +210,21 @@
 				dataType: 'text',
 				url: '/rspamd/getmap',
 				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Password', password),
+					xhr.setRequestHeader('Password', getPassword()),
 					xhr.setRequestHeader('Map', item.map);
 					},
 				error: function() {
 					alertMessage('alert-error', 'Cannot receive maps data');
 				},
-				success: function(data) {
-					//if (text.length > 0) {
-					//	if ((item.editable == false)) {
-					//		var disabled = 'disabled="disabled"';
-					//	} else {
-					//		var disabled = '';
-					//	}
-					//	$('<form class="form-horizontal" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
-					//	'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
-					//	'</form').appendTo('#modalBody');
-					//}
+				success: function(text) {
+					if ((item.editable == false)) {
+						var disabled = 'disabled="disabled"';
+					} else {
+						var disabled = '';
+					}
+				$('<form class="form-horizontal" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
+				'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
+				'</form').appendTo('#modalBody');
 				}
 			})
 		});
@@ -303,7 +314,7 @@
 				dataType: 'json',
 				url: '/rspamd/pie',
 				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Password', password)
+					xhr.setRequestHeader('Password', getPassword())
 				},
 				error: function() {
 					alertMessage('alert-error', 'Cannot receive chart');
@@ -357,7 +368,7 @@
 		//	$.ajax({
 		//		url: dataurl,
 		//		beforeSend: function(xhr) {
-		//			xhr.setRequestHeader('Password', password)
+		//			xhr.setRequestHeader('Password', getPassword())
 		//		},
 		//		method: 'GET',
 		//		dataType: 'json',
@@ -405,7 +416,7 @@
 			dataType: 'json',
 			url: '/rspamd/history',
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Password', password)
+				xhr.setRequestHeader('Password', getPassword())
 			},
 			error: function() {
 				alertMessage('alert-error', 'Cannot receive history');
@@ -449,7 +460,7 @@
 			type: 'GET',
 			url: '/rspamd/symbols',
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Password', password)
+				xhr.setRequestHeader('Password', getPassword())
 				},
 			success: function(data) {
 				$.each(data[0].rules, function(i, item) {
@@ -493,7 +504,7 @@
 			request: {
 				endpoint: '/rspamd/learnspam',
 				customHeaders: {
-					'Password': password
+					'Password': getPassword()
 				}
 			},
 			validation: {
@@ -529,7 +540,7 @@
 			request: {
 				endpoint: '/rspamd/learnham',
 				customHeaders: {
-					'Password': password
+					'Password': getPassword()
 				}
 			},
 			validation: {
@@ -590,7 +601,7 @@
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', password);
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(source) {
 				alertMessage('alert-success', 'Data successfully uploaded');
@@ -625,6 +636,42 @@
 		$('#' + source + 'TextSource').val('');
 	}
 
+	// @get acions
+	function getActions() {
+
+		var items = [];
+
+		$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			url: '/rspamd/actions',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Password', getPassword())
+			},
+			success: function(data) {
+				$.each(data, function(i, item) {
+					if (item.action === 'add_header') {
+						var label = 'Probably Spam';
+					} else if (item.action === 'greylist') {
+						var label = 'Greylist';
+					} else if (item.action === 'reject') {
+						var label = 'Spam';
+					}
+					items.push(
+						'<div class="control-group">' +
+							'<label class="control-label">' + label + '</label>' +
+							'<div class="controls slider-controls">' +
+								'<input class="slider" type="slider" value="' + item.value + '">' +
+							'</div>' +
+						'</div>');
+				});
+				$('<form/>', { id: 'actionsForm', class: 'form-horizontal', html: items.join('')}).appendTo('#actionsBody');
+				initSliders();
+				$('<br><div class="control-group"><div class="controls slider-controls"><button class="btn" type="submit">Save actions</button</p></div></div>').appendTo('#actionsForm');
+			}
+		 });
+	}
+
 	// @init spinners
 	function initSpinners() {
 		$('.numeric').kendoNumericTextBox({
@@ -635,21 +682,24 @@
 		});
 	}
 
+
 	// @init actions slider
-	$('.slider').each(function() {
-		$(this).slider({
-			from: 0,
-			to: 100,
-			scale: ['Not Spam', '|', '|', '|', '|', '|', '|', 'Spam'],
-			step: 10,
-			round: 10,
-			limits: false,
-			format: {
-				format: '0'
-			},
-			skin: "round_plastic"
+	function initSliders() {
+		$('.slider').each(function() {
+			$(this).slider({
+				from: 0,
+				to: 100,
+				scale: ['Not Spam', '|', '|', '|', '|', '|', '|', 'Spam'],
+				step: 10,
+				round: 10,
+				limits: false,
+				format: {
+					format: '0'
+				},
+				skin: "round_plastic"
+			});
 		});
-	});
+	}
 
 	// @upload edited actions
 	$(document).on('submit', '#actionsForm', function() {
@@ -665,22 +715,14 @@
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', password)
-				},
+				xhr.setRequestHeader('Password', getPassword())
+			},
 			success: function() {
 				alertMessage('alert-success', 'Data successfully saved');
-				},
-			error:  function() {
-				alertMessage('alert-error', 'Oops, password is incorrect');
-				},
-			statusCode: {
-				404: function() {
-					alertMessage('alert-error', 'Cannot login, host not found');
-					}
-				}
-			 });
-			return false;
-		});
+			}
+		 });
+		return false;
+	});
 
 	// @catch changes of file upload form
 	$(window).resize(function(e){
@@ -725,7 +767,7 @@
 				type: 'POST',
 				url: action,
 				beforeSend: function (xhr) {
-					xhr.setRequestHeader('Password', password);
+					xhr.setRequestHeader('Password', getPassword());
 					xhr.setRequestHeader('Map', id);
 					xhr.setRequestHeader('Debug', true);
 				},
@@ -733,8 +775,8 @@
 					alertMessage('alert-error', 'Cannot save map data');
 				},
 				success: function(data) {
-					alertMessage('alert-modal alert-succes', 'Map data successfully saved');
-					$('#modalDialog').modal(hide=true);
+					alertMessage('alert-modal alert-success', 'Map data successfully saved');
+					$('#modalDialog').modal('hide');
 				}
 			});
 	}
@@ -755,7 +797,7 @@
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', $.cookie('rspamdpasswd'))
+				xhr.setRequestHeader('Password', getPassword())
 				},
 			success: function() {
 				alertMessage('alert-modal alert-success', 'Data successfully saved');
@@ -836,12 +878,12 @@
 		statWidgets();
 		$('#mainUI').show();
 		$('#progress').show();
+		getActions();
 		getMaps();
 		createUploaders();
 		getChart();
 		getSymbols();
 		getHistory();
-		getMapById();
 		$('#progress').hide();
 	}
 
