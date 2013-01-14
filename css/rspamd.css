@@ -82,9 +82,9 @@ input.number { /* should be same as type=number for IE and overriding */
 	}
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
-	/* display: none; <- Crashes Chrome on hover */
-	-webkit-appearance: none;
-	margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+	/* display:none; <- Crashes Chrome on hover */
+	-webkit-appearance:none;
+	margin:0; /* <-- Apparently some margin are still there even though it's hidden */
 }
 .k-numerictextbox,
 .k-numeric-wrap {
@@ -237,7 +237,6 @@ input::-webkit-inner-spin-button {
 		-o-text-overflow:ellipsis;
 		text-overflow:ellipsis;
 		}
-	.table-history .cell-overflow:hover,
 	.table-history .cell-overflow:focus {
 		margin:-3px -8px;
 		padding:2px 7px 3px;
@@ -324,4 +323,11 @@ td.maps-cell {
 .map-link:focus {
 	color:#005580;
 	text-decoration:underline;
+	}
+.spinner {
+	background:url('../img/spinner.gif') no-repeat -100px;
+	padding-left:25px;
+	}
+.loading .spinner {
+	background-position:0 50%;
 	}

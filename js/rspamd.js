@@ -55,7 +55,6 @@
 	// @request credentials
 	function requestCredentials() {
 		$.ajax({
-			async: true,
 			dataType: 'json',
 			type: 'GET',
 			url: '/rspamd/login',
@@ -66,6 +65,22 @@
 				if (data.auth === 'failed') {
 					connectRSPAMD();
 				}
+			},
+		});
+		console.log('requestCredentials, sessionState: ' + sessionState() + ', Password: ' + password);
+	}
+
+	// @request credentials
+	function updateCredentials() {
+		$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			url: '/rspamd/login',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Password', password)
+			},
+			success: function(data) {
+				saveCredentials(data, password);
 			},
 		});
 		//console.log('requestCredentials, sessionState: ' + sessionState() + ', Password: ' + password);
@@ -125,12 +140,10 @@
 	// @get maps id
 	function getMaps() {
 
-
 		var items = [];
 
 		$('#listMaps').closest('.widget-box').hide();
 		$.ajax({
-			async: true,
 			dataType: 'json',
 			url: '/rspamd/maps',
 			beforeSend: function(xhr) {
@@ -181,7 +194,6 @@
 
 		$.each(data, function(i, item) {
 			$.ajax({
-				async: true,
 				dataType: 'text',
 				url: '/rspamd/getmap',
 				beforeSend: function(xhr) {
@@ -191,44 +203,46 @@
 				error: function() {
 					alertMessage('alert-error', 'Cannot receive maps data');
 				},
-				success: function(text) {
-					if ((item.editable == false)) {
-						var disabled = 'disabled="disabled"';
-					} else {
-						var disabled = '';
+				success: function(data) {
+					//if (text.length > 0) {
+					//	if ((item.editable == false)) {
+					//		var disabled = 'disabled="disabled"';
+					//	} else {
+					//		var disabled = '';
+					//	}
+					//	$('<form class="form-horizontal" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
+					//	'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
+					//	'</form').appendTo('#modalBody');
+					//}
 				}
-			$('<form class="form-horizontal" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
-				'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
-				'</form').appendTo('#modalBody');
-			}})
+			})
 		});
+	}
+
+	// @ ms to date
+	function msToTime(ms){
+		var secs = Math.floor(ms / 1000);
+		var msleft = ms % 1000;
+		var hours = Math.floor(secs / (60 * 60));
+		var divisor_for_minutes = secs % (60 * 60);
+		var minutes = Math.floor(divisor_for_minutes / 60);
+		var divisor_for_seconds = divisor_for_minutes % 60;
+		var seconds = Math.ceil(divisor_for_seconds);
+		return hours + ':' + minutes + ':' + seconds;
 	}
 
 	// @show widgets
 	function statWidgets() {
 
-		function msToTime(ms){
-			var secs = Math.floor(ms / 1000);
-			var msleft = ms % 1000;
-			var hours = Math.floor(secs / (60 * 60));
-			var divisor_for_minutes = secs % (60 * 60);
-			var minutes = Math.floor(divisor_for_minutes / 60);
-			var divisor_for_seconds = divisor_for_minutes % 60;
-			var seconds = Math.ceil(divisor_for_seconds);
-			return hours + ':' + minutes + ':' + seconds;
-		}
-
 		var widgets = $('#statWidgets');
 
-		requestCredentials();
-
-		$(widgets).empty();
+		updateCredentials();
+		$(widgets).empty().hide();
 			if (!supportsSessionStorage()) {
 				var data = $.cookie('rspamdsession');
 			} else {
 				var data = JSON.parse(sessionStorage.getItem('Credentials'));
 			}
-
 			$.each(data, function(i, item) {
 				if (i == 'auth') {
 					// @none
@@ -240,14 +254,17 @@
 				} else if (i == 'uptime') {
 					var widget = '<div class="right"><strong>' + msToTime(item) + '</strong>' + i + '</div>';
 					$(widget).appendTo(widgets);
+					console.log(item);
 				} else {
 					var widget = '<li class="stat-box"><div class="widget"><strong>' + item + '</strong>' + i + '</div></li>';
 					$(widget).appendTo(widgets);
 				}
 			});
-			$('#statWidgets .left,#statWidgets .right').wrapAll('<li class="stat-box pull-right"><div class="widget"></div></li>');
-			$(widgets).show('fast');
-		}
+		$('#statWidgets .left,#statWidgets .right').wrapAll('<li class="stat-box pull-right"><div class="widget"></div></li>');
+		$(widgets).show();
+		window.setTimeout(statWidgets, 10000);
+		//console.log('widgets finised');
+	}
 
 	// @opem modal with target form enabled
 	$(document).on('click', '[data-toggle="modal"]', function(e) {
@@ -283,7 +300,6 @@
 		var data = (function() {
 			var data = null;
 			$.ajax({
-				async: true,
 				dataType: 'json',
 				url: '/rspamd/pie',
 				beforeSend: function(xhr) {
@@ -386,7 +402,6 @@
 	function getHistory() {
 		var items = [];
 		$.ajax({
-			async: true,
 			dataType: 'json',
 			url: '/rspamd/history',
 			beforeSend: function(xhr) {
@@ -418,15 +433,11 @@
 						'<td>' + item.size +  '</td>' +
 						'<td>' + item.scan_time +  '</td>' +
 						'<td><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user +  '</div></td></tr>');
-					});
-				$('<tbody/>', {
-					html: items.join('')
-					}).insertAfter('#historyLog thead');
-					$('#historyLog').tablesorter({
-						sortList: [[0,1]]
-					})
-					.paginateTable({ rowsPerPage: 20 }, {textExtraction: function(node) { var pat=/^[0-9]+/; return pat.exec(node.innerHTML); }});
-				}
+				});
+				$('<tbody/>', {html: items.join('')}).insertAfter('#historyLog thead');
+				$('#historyLog').tablesorter({sortList: [[0,1]]}).paginateTable({ rowsPerPage: 20 }, {textExtraction: function(node) { var pat=/^[0-9]+/; return pat.exec(node.innerHTML);
+				}});
+			}
 		});
 	}
 
@@ -434,7 +445,6 @@
 	function getSymbols() {
 		var items = [];
 		$.ajax({
-			async: true,
 			dataType: 'json',
 			type: 'GET',
 			url: '/rspamd/symbols',
@@ -462,16 +472,18 @@
 	}
 
 	// @update history log
-	$('[data-update]').on('click', function() {
-
-		var table = $('#historyLog');
-		var height = $(table).height();
-
-		$(table).children('tbody').remove();
+	$('#updateHistory').on('click', function() {
+		$(this).addClass('loading');
+		var target = '#historyLog';
+		var height = $(target).height();
+		$(target).parent().css('height', height);
+		$(target).children('tbody').remove();
 		setTimeout(function() {
 			getHistory();
-			$(table).fadeIn('slow');
+			$(target).fadeIn();
 		}, 1200);
+		$(target).parent().removeAttr('style');
+		console.log(height);
 	});
 
 	// @spam upload form
@@ -548,6 +560,7 @@
 				}
 			}
 		});
+		console.log('uploader');
 
 		// @upload spam button
 		$('#uploadSpamTrigger').on('click', function() {
@@ -572,7 +585,6 @@
 			var url = '/rspamd/scan'
 		};
 		$.ajax({
-			async: true,
 			data: data,
 			dataType: 'text',
 			type: 'POST',
@@ -648,7 +660,6 @@
 			values.push(parseFloat($(this).val()));
 		});
 		$.ajax({
-			async: true,
 			data: JSON.stringify(values),
 			dataType: 'application/json',
 			type: 'POST',
@@ -709,7 +720,6 @@
 		var data = $('#' + id).find('textarea').val();
 
 			$.ajax({
-				async: true,
 				data: data,
 				dataType: 'text',
 				type: 'POST',
@@ -740,7 +750,6 @@
 			values.push({ name: $(this).attr('id'), value: parseFloat($(this).val()) });
 			});
 		$.ajax({
-			async: true,
 			data: JSON.stringify(values),
 			dataType: 'application/json',
 			type: 'POST',
@@ -766,14 +775,18 @@
 
 	// @connect to server
 	function connectRSPAMD() {
-		if (!sessionState()) {
 
+			cleanCredentials();
+
+			var nav = $('#navBar');
 			var ui = $('#mainUI');
 			var dialog = $('#connectDialog');
 			var backdrop = $('#backDrop');
+			var disconnect = $('#navBar .pull-right');
 
 			$(ui).hide();
 			$(dialog).show();
+			$('#connectHost').focus();
 			$(backdrop).show();
 			$(document).on('submit', '#connectForm', function(e) {
 				e.preventDefault();
@@ -781,7 +794,6 @@
 				var password = $('#connectPassword').val();
 
 				$.ajax({
-					async: true,
 					global: false,
 					dataType: 'json',
 					type: 'GET',
@@ -796,7 +808,11 @@
 							});
 						} else {
 							saveCredentials(data, password);
-							location.reload();
+							$(dialog).hide();
+							$(backdrop).hide();
+							$(disconnect).show();
+							displayUI();
+							//location.reload();
 							//console.log('connectRSPAMD, sessionState: ' + sessionState() + ', Password: ' + password);
 						}
 					},
@@ -810,41 +826,32 @@
 					}
 				});
 			});
-		}
 	}
 
-	// @call all by login or with full refresh
-	if (!sessionState()) {
-		// @connect form
-		connectRSPAMD();
-	} else {
-		displayUI();
-	}
+	connectRSPAMD();
 
-	//start display ui
 	function displayUI() {
 
 		// @toggle login and main
-		var ui = $('#mainUI');
-		var dialog = $('#connectDialog');
-		var backdrop = $('#backDrop');
-
-		$(ui).show();
-		//console.log('ui showed');
-
-		requestCredentials();
 		statWidgets();
+		$('#mainUI').show();
+		$('#progress').show();
 		getMaps();
+		createUploaders();
 		getChart();
 		getSymbols();
 		getHistory();
 		getMapById();
-		createUploaders();
-
-		//stop display ui
+		$('#progress').hide();
 	}
 
+	$(document).ajaxStart(function() {
+		$('#navBar').addClass('loading');
+	});
 
+	$(document).ajaxComplete(function() {
+		$('#navBar').removeClass('loading');
+	});
 
 // end
 });})()
