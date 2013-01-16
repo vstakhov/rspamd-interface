@@ -588,11 +588,11 @@
 
 	// @upload text
 	function uploadText(data, source) {
-		if (source == 'spam') {
+		if (source === 'spam') {
 			var url = '/rspamd/learnspam'
-		} if (source == 'ham') {
+		} if (source === 'ham') {
 			var url = '/rspamd/learnham'
-		} if (source == 'scan') {
+		} if (source === 'scan') {
 			var url = '/rspamd/scan'
 		};
 		$.ajax({
@@ -621,12 +621,90 @@
 		});
 	}
 
+	// @upload text
+	function scanText(data) {
+
+		var url = '/rspamd/scan';
+		var items = [];
+
+		$.ajax({
+			data: data,
+			dataType: 'json',
+			type: 'POST',
+			url: url,
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Password', getPassword());
+			},
+			success: function(data) {
+				alertMessage('alert-success', 'Data successfully scanned');
+
+				if (data.action === 'clean'||'no action') {
+					var action = 'label-success'
+				} if (data.action === 'rewrite subject'||'add heeader'||'probable spam') {
+					var action = 'label-warning'
+				} if (data.action === 'spam') {
+					var action = 'label-important'
+				} if (data.score <= data.required_score) {
+					var score = 'label-success'
+				} if (data.score >= data.required_score) {
+					var score = 'label-important'
+				}
+
+				$('<tbody id="tmpBody"><tr>' +
+					'<td><span class="label ' + action + '">' + data.action + '</span></td>' +
+					'<td><span class="label ' + score + '">' + data.score + '/' + data.required_score + '</span></td>' +
+					'</tr></tbody>')
+				.insertAfter('#scanOutput thead');
+
+				$.each(data.symbols, function(i, item) {
+					items.push('<div class="cell-overflow" tabindex="1">'+ item.name + ': ' + item.weight + '</div>');
+					});
+				$('<td/>', { id: 'tmpSymbols', html: items.join('') }).appendTo('#scanResult');
+
+				$('#tmpSymbols').insertAfter('#tmpBody td:last').removeAttr('id');
+				$('#tmpBody').removeAttr('id');
+				$('#scanResult').show();
+				$('html, body').animate({
+					scrollTop: $('#scanResult').offset().top
+				}, 1000);
+			},
+			error: function() {
+				alertMessage('alert-error', 'Cannot upload data');
+			},
+			statusCode: {
+				404: function() {
+					alertMessage('alert-error', 'Cannot upload data, no server found');
+				},
+				500: function() {
+					alertMessage('alert-error', 'Cannot tokenize message: no text data');
+				},
+				503: function() {
+					alertMessage('alert-error', 'Cannot tokenize message: no text data');
+				}
+			}
+		});
+	}
+
+	// @close scan output
+	$('#scanClean').on('click', function() {
+		$('#scanTextSource').val('');
+		$('#scanResult').hide();
+		$('#scanOutput tbody').remove();
+		$('html, body').animate({
+			scrollTop: 0
+		}, 1000);
+	});
+
 	// @init upload
 	$('[data-upload]').on('click', function() {
 		var source = $(this).data('upload');
 		var data = $('#' + source + 'TextSource').val();
 		if (data.length > 0) {
-			uploadText(data, source);
+			if (source == 'scan') {
+				scanText(data);
+			} else {
+				uploadText(data, source);
+			}
 		}
 		return false;
 	});
@@ -635,6 +713,7 @@
 	function cleanTextUpload(source) {
 		$('#' + source + 'TextSource').val('');
 	}
+
 
 	// @get acions
 	function getActions() {
