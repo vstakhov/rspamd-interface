@@ -69,7 +69,6 @@
 				}
 			},
 		});
-		console.log('requestCredentials, sessionState: ' + sessionState() + ', Password: ' + password);
 	}
 
 	// @request credentials
@@ -85,7 +84,6 @@
 				saveCredentials(data, password);
 			},
 		});
-		//console.log('requestCredentials, sessionState: ' + sessionState() + ', Password: ' + password);
 	}
 
 	// @save credentials
@@ -106,7 +104,6 @@
 		} else {
 			sessionStorage.setItem('Actions', JSON.stringify(data));
 		}
-		//console.log('Maps saved');
 	}
 
 	// @update credentials
@@ -116,7 +113,6 @@
 		} else {
 			sessionStorage.setItem('Maps', JSON.stringify(data));
 		}
-		//console.log('Maps saved');
 	}
 
 	// @clean credentials
@@ -197,12 +193,17 @@
 	}
 
 	// @get map by id
-	function getMapById() {
+	function getMapById(mode) {
+
 
 		if (!supportsSessionStorage()) {
 			var data = $.cookie('rspamdmaps', data, { expires: 1 }, { path: '/' });
 		} else {
 			var data = JSON.parse(sessionStorage.getItem('Maps'));
+		}
+		if (mode === 'update') {
+			$('#modalBody').empty();
+			getSymbols();
 		}
 
 		$.each(data, function(i, item) {
@@ -222,7 +223,7 @@
 					} else {
 						var disabled = '';
 					}
-				$('<form class="form-horizontal" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
+				$('<form class="form-horizontal form-map" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
 				'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
 				'</form').appendTo('#modalBody');
 				}
@@ -265,7 +266,6 @@
 				} else if (i == 'uptime') {
 					var widget = '<div class="right"><strong>' + msToTime(item) + '</strong>' + i + '</div>';
 					$(widget).appendTo(widgets);
-					console.log(item);
 				} else {
 					var widget = '<li class="stat-box"><div class="widget"><strong>' + item + '</strong>' + i + '</div></li>';
 					$(widget).appendTo(widgets);
@@ -274,7 +274,6 @@
 		$('#statWidgets .left,#statWidgets .right').wrapAll('<li class="stat-box pull-right"><div class="widget"></div></li>');
 		$(widgets).show();
 		window.setTimeout(statWidgets, 10000);
-		//console.log('widgets finised');
 	}
 
 	// @opem modal with target form enabled
@@ -295,8 +294,6 @@
 			$('#modalSave').show();
 			}
 
-		//console.log(source + ', ' + editable + ', ' + caption + ', ' + body + ', ' + target)
-
 		return false;
 	});
 
@@ -306,108 +303,136 @@
 	});
 
 	// @get chart
+	//function getChart() {
+	//	var options = {
+	//		lines: {
+	//			show: true,
+	//			fill: true,
+	//			fillColor: { colors: [ {opacity: 0.5}, {opacity: 0.5} ] }
+	//		},
+	//		legend: {
+	//			show: false
+	//		},
+	//		series: {
+	//			pie: {
+	//				show: true,
+	//				radius: 1,
+	//				label: {
+	//					show: true,
+	//					radius: 3/4,
+	//					formatter: function(label, series){
+	//						return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
+	//				},
+	//				background: {
+	//					opacity: 0.5,
+	//					color: '#000'
+	//				}
+	//			}
+	//		}
+	//	}
+	//};
+
+	//var data = [];
+	//var placeholder = $('#chart');
+	//var alreadyFetched = {};
+
+	//$.plot(placeholder, data, options);
+
+	//$(placeholder).ready(function () {
+
+	//	var dataurl = '/rspamd/pie';
+
+	//	function onDataReceived(series) {
+	//		$.plot(placeholder, series, options);
+	//		$(placeholder).removeAttr('style');
+	//		}
+	//	$.ajax({
+	//		url: dataurl,
+	//		beforeSend: function(xhr) {
+	//			xhr.setRequestHeader('Password', getPassword())
+	//			},
+	//		method: 'GET',
+	//		dataType: 'json',
+	//		success: onDataReceived,
+	//		error: function() {
+	//			$(placeholder).closest('.widget-box').addClass('unavailable');
+	//			}
+	//		});
+	//	});
+	//}
+
 	function getChart() {
-
-		var data = (function() {
-			var data = null;
-			$.ajax({
-				dataType: 'json',
-				url: '/rspamd/pie',
-				beforeSend: function(xhr) {
-					xhr.setRequestHeader('Password', getPassword())
-				},
-				error: function() {
-					alertMessage('alert-error', 'Cannot receive chart');
-				},
-				'success': function (data) {
-					json = data;
-				}
-			});
-			return data;
-		})();
-
-		var data = [];
-
-		//var options = {
-		//	lines: {
-		//		show: true,
-		//		fill: true,
-		//		fillColor: { colors: [ {opacity: 0.5}, {opacity: 0.5} ] }
-		//	},
-		//	points: {show: true},
-		//	xaxis: {
-		//		mode: "time",
-		//		timeformat: "%H:%M:%S"
-		//	},
-		//	grid: {
-		//		hoverable: true,
-		//		clickable: true,
-		//		tickColor: "#ddd",
-		//		borderWidth: 1,
-		//		borderColor: "#cdcdcd",
-		//		backgroundColor: { colors: ["#fff", "#eee"] }
-		//	},
-		//	 colors: ["#1BB2E9"]
-		//};
-		//var data = [];
-		//var placeholder = $('#chart');
-		//var alreadyFetched = {};
-
-		//$.plot(placeholder, data, options);
-		//$(placeholder).ready(function () {
-		//	var dataurl = '/rspamd/graph';
-		//	function onDataReceived(series) {
-		//		//var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
-		//		//if (!alreadyFetched[series.label]) {
-		//		//	alreadyFetched[series.label] = true;
-		//		//	data.push(series);
-		//		//	}
-		//		$.plot(placeholder, series, options);
-		//		$(placeholder).removeAttr('style');
-		//	}
-		//	$.ajax({
-		//		url: dataurl,
-		//		beforeSend: function(xhr) {
-		//			xhr.setRequestHeader('Password', getPassword())
-		//		},
-		//		method: 'GET',
-		//		dataType: 'json',
-		//		success: onDataReceived,
-		//		error: function() {
-		//			$(placeholder).closest('.widget-box').addClass('unavailable');
-		//		}
-		//	});
-		//});
-
-		$.plot($('#chart'), data, {
-			series: {
-				pie: { 
-					show: true,
-					radius: 1,
-					label: {
-						show: true,
-						radius: 1,
-						formatter: function(label, series){
-							return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-						},
-						background: { opacity: 0.8 }
-					}
-				}
+		$.ajax({
+			dataType: 'json',
+			type: 'GET',
+			url: '/rspamd/pie',
+			beforeSend: function (xhr) {
+				xhr.setRequestHeader('Password', getPassword())
 			},
-			grid: {
-				hoverable: true,
-				clickable: true,
-				tickColor: "#ddd",
-				borderWidth: 1,
-				borderColor: "#cdcdcd",
-				backgroundColor: { colors: ["#fff", "#eee"] }
-			},
-			legend: {
-				show: false
+			success: function(data) {
+				console.log(data);
+
+				$(function () {
+					var chart;
+					$(document).ready(function() {
+						chart = new Highcharts.Chart({
+							chart: {
+								renderTo: 'chart',
+								plotBackgroundColor: null,
+								plotBorderWidth: null,
+								plotShadow: false
+							},
+							title: {
+								text: null
+							},
+							tooltip: {
+								enabled: false
+							},
+							plotOptions: {
+								pie: {
+									allowPointSelect: true,
+									cursor: 'default',
+									dataLabels: {
+										enabled: true,
+										color: '#333333',
+										connectorColor: '#cbcbcb',
+										formatter: function() {
+											return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 1) +' %';
+										}
+									}
+								}
+							},
+							series: [{
+								type: 'pie',
+								name: 'Messages',
+								data: data
+							}]
+						});
+					});
+				});
+
 			}
 		});
-
 	}
+
+	// @get history log
+	//function getChart() {
+	//	//console.log(data)
+	//	$.ajax({
+	//		dataType: 'json',
+	//		url: './pie',
+	//		beforeSend: function(xhr) {
+	//			xhr.setRequestHeader('Password', getPassword())
+	//		},
+	//		error: function() {
+	//			alertMessage('alert-error', 'Cannot receive history');
+	//		},
+	//		success: function(data) {
+	//			console.log(data);
+	//		}
+	//	});
+	//}
+
 
 	// @get history log
 	function getHistory() {
@@ -473,7 +498,7 @@
 										'</div>' +
 									'</div>');
 					});
-				$('<form/>', { id: 'symbolsForm', method: 'post', action: '/rspamd/savesymbols/', 'data-type': 'symbols', style: 'display:none', html: items.join('') }).appendTo('#modalBody');
+				$('<form/>', { id: 'symbolsForm', method: 'post', action: '/rspamd/savesymbols', 'data-type': 'symbols', style: 'display:none', html: items.join('') }).appendTo('#modalBody');
 				initSpinners();
 			},
 			error:  function(data) {
@@ -494,7 +519,6 @@
 			$(target).fadeIn();
 		}, 1200);
 		$(target).parent().removeAttr('style');
-		console.log(height);
 	});
 
 	// @spam upload form
@@ -571,7 +595,6 @@
 				}
 			}
 		});
-		console.log('uploader');
 
 		// @upload spam button
 		$('#uploadSpamTrigger').on('click', function() {
@@ -769,7 +792,7 @@
 				from: 0,
 				to: 100,
 				scale: ['Not Spam', '|', '|', '|', '|', '|', '|', 'Spam'],
-				step: 10,
+				step: 1,
 				round: 10,
 				limits: false,
 				format: {
@@ -797,9 +820,10 @@
 				xhr.setRequestHeader('Password', getPassword())
 			},
 			success: function() {
-				alertMessage('alert-success', 'Data successfully saved');
+				//alertMessage('alert-success', 'Data successfully saved');
 			}
 		 });
+		getMapById('update');
 		return false;
 	});
 
@@ -807,7 +831,6 @@
 	$(window).resize(function(e){
 		var form = $(this).attr('id');
 		var height = $(form).height();
-		//console.log(height);
 	});
 
 	// @watch textarea changes
@@ -863,7 +886,7 @@
 	// @upload symbols from modal
 	function saveSymbols(action, id) {
 
-		var inputs = $('#' + id + ' :input[type="text"]');
+		var inputs = $('#' + id + ' :input[data-role="numerictextbox"]');
 		var url = action;
 		var values = [];
 
@@ -933,8 +956,6 @@
 							$(backdrop).hide();
 							$(disconnect).show();
 							displayUI();
-							//location.reload();
-							//console.log('connectRSPAMD, sessionState: ' + sessionState() + ', Password: ' + password);
 						}
 					},
 					error:  function(data) {
@@ -960,9 +981,9 @@
 		getActions();
 		getMaps();
 		createUploaders();
-		getChart();
 		getSymbols();
 		getHistory();
+		getChart();
 		$('#progress').hide();
 	}
 

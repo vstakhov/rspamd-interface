@@ -26,17 +26,15 @@ textarea {
 	-ms-text-shadow:0 1px 0 #fff;
 	text-shadow:0 1px 0 #fff;
 	}
-.chart {
-	position:relative;
-	width:100%;
-	height:400px;
+.chart-content {
+	text-align:center;
 	}
-.chart-buttons {
-	position:absolute;
-	z-index:10;
-	top:7px;
-	right:7px;
-	}
+	.chart {
+		height:400px;
+		margin:0 auto;
+		text-align:center;
+		background:#fff;
+		}
 .notice {
 	display:none;
 	}
