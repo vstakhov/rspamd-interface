@@ -639,15 +639,17 @@
 		};
 		$.ajax({
 			data: data,
-			dataType: 'text',
+			dataType: 'json',
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword());
 			},
-			success: function(source) {
-				alertMessage('alert-success', 'Data successfully uploaded');
+			success: function(data) {
 				cleanTextUpload(source);
+				if (data.success) {
+					alertMessage('alert-success', 'Data successfully uploaded');
+				}
 			},
 			//error: function() {
 			//	alertMessage('alert-error', 'Cannot upload data');
@@ -678,37 +680,42 @@
 				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
-				alertMessage('alert-success', 'Data successfully scanned');
+				if (data.success) {
+					alertMessage('alert-success', 'Data successfully scanned');
 
-				if (data.action === 'clean'||'no action') {
-					var action = 'label-success'
-				} if (data.action === 'rewrite subject'||'add heeader'||'probable spam') {
-					var action = 'label-warning'
-				} if (data.action === 'spam') {
-					var action = 'label-important'
-				} if (data.score <= data.required_score) {
-					var score = 'label-success'
-				} if (data.score >= data.required_score) {
-					var score = 'label-important'
+					if (data.action === 'clean'||'no action') {
+						var action = 'label-success'
+					} if (data.action === 'rewrite subject'||'add heeader'||'probable spam') {
+						var action = 'label-warning'
+					} if (data.action === 'spam') {
+						var action = 'label-important'
+					} if (data.score <= data.required_score) {
+						var score = 'label-success'
+					} if (data.score >= data.required_score) {
+						var score = 'label-important'
+					}
+
+					$('<tbody id="tmpBody"><tr>' +
+						'<td><span class="label ' + action + '">' + data.action + '</span></td>' +
+						'<td><span class="label ' + score + '">' + data.score + '/' + data.required_score + '</span></td>' +
+						'</tr></tbody>')
+					.insertAfter('#scanOutput thead');
+
+					$.each(data.symbols, function(i, item) {
+						items.push('<div class="cell-overflow" tabindex="1">'+ item.name + ': ' + item.weight + '</div>');
+						});
+					$('<td/>', { id: 'tmpSymbols', html: items.join('') }).appendTo('#scanResult');
+
+					$('#tmpSymbols').insertAfter('#tmpBody td:last').removeAttr('id');
+					$('#tmpBody').removeAttr('id');
+					$('#scanResult').show();
+					$('html, body').animate({
+						scrollTop: $('#scanResult').offset().top
+					}, 1000);
 				}
-
-				$('<tbody id="tmpBody"><tr>' +
-					'<td><span class="label ' + action + '">' + data.action + '</span></td>' +
-					'<td><span class="label ' + score + '">' + data.score + '/' + data.required_score + '</span></td>' +
-					'</tr></tbody>')
-				.insertAfter('#scanOutput thead');
-
-				$.each(data.symbols, function(i, item) {
-					items.push('<div class="cell-overflow" tabindex="1">'+ item.name + ': ' + item.weight + '</div>');
-					});
-				$('<td/>', { id: 'tmpSymbols', html: items.join('') }).appendTo('#scanResult');
-
-				$('#tmpSymbols').insertAfter('#tmpBody td:last').removeAttr('id');
-				$('#tmpBody').removeAttr('id');
-				$('#scanResult').show();
-				$('html, body').animate({
-					scrollTop: $('#scanResult').offset().top
-				}, 1000);
+				else {
+					alertMessage('alert-error', 'Cannot scan data');
+				}
 			},
 			error: function() {
 				alertMessage('alert-error', 'Cannot upload data');
@@ -770,21 +777,29 @@
 				xhr.setRequestHeader('Password', getPassword())
 			},
 			success: function(data) {
+				// Order of sliders greylist -> probable spam -> spam
+				items = []	
 				$.each(data, function(i, item) {
+					var idx = -1;
 					if (item.action === 'add_header') {
 						var label = 'Probably Spam';
+						idx = 1;
 					} else if (item.action === 'greylist') {
 						var label = 'Greylist';
+						idx = 0;
 					} else if (item.action === 'reject') {
 						var label = 'Spam';
+						idx = 2;
 					}
-					items.push(
-						'<div class="control-group">' +
-							'<label class="control-label">' + label + '</label>' +
-							'<div class="controls slider-controls">' +
-								'<input class="slider" type="slider" value="' + item.value + '">' +
-							'</div>' +
-						'</div>');
+					if (idx >= 0) {
+						items[idx] = 
+							'<div class="control-group">' +
+								'<label class="control-label">' + label + '</label>' +
+								'<div class="controls slider-controls">' +
+									'<input class="slider" type="slider" value="' + item.value + '">' +
+								'</div>' +
+							'</div>';
+					}
 				});
 				$('<form/>', { id: 'actionsForm', class: 'form-horizontal', html: items.join('')}).appendTo('#actionsBody');
 				initSliders();
@@ -827,19 +842,20 @@
 		var inputs = $('#actionsForm :input[type="slider"]');
 		var url = '/rspamd/saveactions';
 		var values = [];
-		$(inputs).each(function() {
-			values.push(parseFloat($(this).val()));
-		});
+		// Rspamd order: [spam,probable_spam,greylist]
+		values[0] = parseFloat(inputs[2].value)
+		values[1] = parseFloat(inputs[1].value)
+		values[2] = parseFloat(inputs[0].value)
 		$.ajax({
 			data: JSON.stringify(values),
-			dataType: 'application/json',
+			dataType: 'json',
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
 			success: function() {
-				//alertMessage('alert-success', 'Data successfully saved');
+				alertMessage('alert-success', 'Actions successfully saved');
 			}
 		 });
 		getMapById('update');
@@ -914,14 +930,14 @@
 			});
 		$.ajax({
 			data: JSON.stringify(values),
-			dataType: 'application/json',
+			dataType: 'json',
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 				},
 			success: function() {
-				alertMessage('alert-modal alert-success', 'Data successfully saved');
+				alertMessage('alert-modal alert-success', 'Symbols successfully saved');
 				},
 			error:  function(data) {
 				alertMessage('alert-modal alert-error', 'Oops, password is incorrect');
