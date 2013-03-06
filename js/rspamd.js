@@ -28,6 +28,9 @@
 		//window.location.reload();
 		return false;
 		});
+	$('#refresh').on('click', function(event) {
+		statWidgets();
+		});
 
 	// @supports session storage
 	function supportsSessionStorage() {
@@ -251,15 +254,34 @@
 	}
 
 	// @ ms to date
-	function msToTime(ms){
-		var secs = Math.floor(ms / 1000);
-		var msleft = ms % 1000;
-		var hours = Math.floor(secs / (60 * 60));
-		var divisor_for_minutes = secs % (60 * 60);
-		var minutes = Math.floor(divisor_for_minutes / 60);
-		var divisor_for_seconds = divisor_for_minutes % 60;
-		var seconds = Math.ceil(divisor_for_seconds);
-		return hours + ':' + minutes + ':' + seconds;
+	function msToTime(seconds){
+		minutes = parseInt(seconds / 60);
+		hours = parseInt( seconds / 3600);
+		days = parseInt( seconds / 3600 /24);
+		weeks = parseInt(seconds / 3600 / 24 /7);
+		year = parseInt(seconds  / 3600 / 168 / 365);
+		if (weeks > 0) {
+			years = years > 10 ? years : '0' + years;
+			weeks -= years * 168;
+			weeks = weeks > 10 ? weeks : '0' + weeks;
+			// Return in format X years and Y weeks
+			return years + ' years ' + weeks + ' weeks';
+		}
+		
+		seconds -= minutes * 60;
+		minutes -= hours * 60;
+		hours -= days * 24;
+		
+		days = days > 10 ? days : '0' + days;
+		hours = hours > 10 ? hours : '0' + hours;
+		minutes = minutes > 10 ? minutes : '0' + minutes;
+		seconds = seconds > 10 ? seconds : '0' + seconds;
+		if (days > 0) {
+			return days + ' days, ' + hours + ':' + minutes + ':' + seconds;
+		}
+		else {
+			return hours + ':' + minutes + ':' + seconds;
+		}
 	}
 
 	// @show widgets
@@ -274,6 +296,7 @@
 			} else {
 				var data = JSON.parse(sessionStorage.getItem('Credentials'));
 			}
+			var stat_w = []
 			$.each(data, function(i, item) {
 				if (i == 'auth') {
 					// @none
@@ -287,9 +310,27 @@
 					$(widget).appendTo(widgets);
 				} else {
 					var widget = '<li class="stat-box"><div class="widget"><strong>' + item + '</strong>' + i + '</div></li>';
-					$(widget).appendTo(widgets);
+					if (i == 'scanned') {
+						stat_w[0] = widget;
+					}
+					else if (i == 'clean') {
+						stat_w[1] = widget;
+					}
+					else if (i == 'greylist') {
+						stat_w[2] = widget;
+					}
+					else if (i == 'probable') {
+						stat_w[3] = widget;
+					}
+					else if (i == 'reject') {
+						stat_w[4] = widget;
+					}
+					else if (i == 'learned') {
+						stat_w[5] = widget;
+					}
 				}
 			});
+			$.each(stat_w, function(i, item) {$(item).appendTo(widgets);});
 		$('#statWidgets .left,#statWidgets .right').wrapAll('<li class="stat-box pull-right"><div class="widget"></div></li>');
 		$(widgets).show();
 		window.setTimeout(statWidgets, 10000);
@@ -469,7 +510,7 @@
 				$.each(data, function(i, item) {
 					if (item.action === 'clean'||'no action') {
 						var action = 'label-success'
-					} if (item.action === 'rewrite subject'||'add heeader'||'probable spam') {
+					} if (item.action === 'rewrite subject'||'add header'||'probable spam') {
 						var action = 'label-warning'
 					} if (item.action === 'spam') {
 						var action = 'label-important'
@@ -1029,6 +1070,7 @@
 	$(document).ajaxComplete(function() {
 		$('#navBar').removeClass('loading');
 	});
+
 
 // end
 });})()
