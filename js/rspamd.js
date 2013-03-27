@@ -259,7 +259,7 @@
 		hours = parseInt( seconds / 3600);
 		days = parseInt( seconds / 3600 /24);
 		weeks = parseInt(seconds / 3600 / 24 /7);
-		year = parseInt(seconds  / 3600 / 168 / 365);
+		years = parseInt(seconds  / 3600 / 168 / 365);
 		if (weeks > 0) {
 			years = years >= 10 ? years : '0' + years;
 			weeks -= years * 168;
