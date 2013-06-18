@@ -721,7 +721,7 @@
 				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
-				if (data.success) {
+				if (data.action) {
 					alertMessage('alert-success', 'Data successfully scanned');
 
 					if (data.action === 'clean'||'no action') {
@@ -757,9 +757,6 @@
 				else {
 					alertMessage('alert-error', 'Cannot scan data');
 				}
-			},
-			error: function() {
-				alertMessage('alert-error', 'Cannot upload data');
 			},
 			statusCode: {
 				404: function() {
