@@ -81,7 +81,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/login',
+			url: '/rspamd/auth',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -98,7 +98,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/login',
+			url: '/rspamd/auth',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -982,7 +982,7 @@
 				},
 			statusCode: {
 				404: function() {
-					alertMessage('alert-modal alert-error', 'Cannot login, host not found');
+					alertMessage('alert-modal alert-error', 'Cannot auth, host not found');
 					}
 				}
 			});
@@ -1014,7 +1014,7 @@
 					global: false,
 					dataType: 'json',
 					type: 'GET',
-					url: '/rspamd/login',
+					url: '/rspamd/auth',
 					beforeSend: function (xhr) {
 						xhr.setRequestHeader('Password', password)
 					},
@@ -1036,7 +1036,7 @@
 					},
 					statusCode: {
 						404: function() {
-							alertMessage('alert-modal alert-error', 'Cannot login, host not found');
+							alertMessage('alert-modal alert-error', 'Cannot auth, host not found');
 						}
 					}
 				});
@@ -1047,7 +1047,7 @@
 
 	function displayUI() {
 
-		// @toggle login and main
+		// @toggle auth and main
 		statWidgets();
 		$('#mainUI').show();
 		$('#progress').show();
