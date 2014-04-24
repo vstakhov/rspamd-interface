@@ -81,7 +81,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/auth',
+			url: '/auth',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -98,7 +98,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/auth',
+			url: '/auth',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -175,7 +175,7 @@
 		$('#listMaps').closest('.widget-box').hide();
 		$.ajax({
 			dataType: 'json',
-			url: '/rspamd/maps',
+			url: '/maps',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 				},
@@ -231,7 +231,7 @@
 		$.each(data, function(i, item) {
 			$.ajax({
 				dataType: 'text',
-				url: '/rspamd/getmap',
+				url: '/getmap',
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('Password', getPassword()),
 					xhr.setRequestHeader('Map', item.map);
@@ -245,7 +245,7 @@
 					} else {
 						var disabled = '';
 					}
-				$('<form class="form-horizontal form-map" method="post "action="/rspamd/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
+				$('<form class="form-horizontal form-map" method="post "action="/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
 				'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
 				'</form').appendTo('#modalBody');
 				}
@@ -400,7 +400,7 @@
 
 	//$(placeholder).ready(function () {
 
-	//	var dataurl = '/rspamd/pie';
+	//	var dataurl = '/pie';
 
 	//	function onDataReceived(series) {
 	//		$.plot(placeholder, series, options);
@@ -425,7 +425,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/pie',
+			url: '/pie',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -499,7 +499,7 @@
 		var items = [];
 		$.ajax({
 			dataType: 'json',
-			url: '/rspamd/history',
+			url: '/history',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -543,7 +543,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/symbols',
+			url: '/symbols',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 				},
@@ -558,7 +558,7 @@
 										'</div>' +
 									'</div>');
 					});
-				$('<form/>', { id: 'symbolsForm', method: 'post', action: '/rspamd/savesymbols', 'data-type': 'symbols', style: 'display:none', html: items.join('') }).appendTo('#modalBody');
+				$('<form/>', { id: 'symbolsForm', method: 'post', action: '/savesymbols', 'data-type': 'symbols', style: 'display:none', html: items.join('') }).appendTo('#modalBody');
 				initSpinners();
 			},
 			error:  function(data) {
@@ -586,7 +586,7 @@
 		var spamUploader = new qq.FineUploader({
 			element: $('#uploadSpamFiles')[0],
 			request: {
-				endpoint: '/rspamd/learnspam',
+				endpoint: '/learnspam',
 				customHeaders: {
 					'Password': getPassword()
 				}
@@ -622,7 +622,7 @@
 		var hamUploader = new qq.FineUploader({
 			element: $('#uploadHamFiles')[0],
 			request: {
-				endpoint: '/rspamd/learnham',
+				endpoint: '/learnham',
 				customHeaders: {
 					'Password': getPassword()
 				}
@@ -672,11 +672,11 @@
 	// @upload text
 	function uploadText(data, source) {
 		if (source === 'spam') {
-			var url = '/rspamd/learnspam'
+			var url = '/learnspam'
 		} if (source === 'ham') {
-			var url = '/rspamd/learnham'
+			var url = '/learnham'
 		} if (source === 'scan') {
-			var url = '/rspamd/scan'
+			var url = '/scan'
 		};
 		$.ajax({
 			data: data,
@@ -709,7 +709,7 @@
 	// @upload text
 	function scanText(data) {
 
-		var url = '/rspamd/scan';
+		var url = '/scan';
 		var items = [];
 
 		$.ajax({
@@ -810,7 +810,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/rspamd/actions',
+			url: '/actions',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -878,7 +878,7 @@
 	// @upload edited actions
 	$(document).on('submit', '#actionsForm', function() {
 		var inputs = $('#actionsForm :input[type="slider"]');
-		var url = '/rspamd/saveactions';
+		var url = '/saveactions';
 		var values = [];
 		// Rspamd order: [spam,probable_spam,greylist]
 		values[0] = parseFloat(inputs[2].value)
@@ -1014,7 +1014,7 @@
 					global: false,
 					dataType: 'json',
 					type: 'GET',
-					url: '/rspamd/auth',
+					url: '/auth',
 					beforeSend: function (xhr) {
 						xhr.setRequestHeader('Password', password)
 					},
