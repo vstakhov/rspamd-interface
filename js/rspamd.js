@@ -81,7 +81,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/auth',
+			url: 'auth',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -98,7 +98,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/auth',
+			url: 'auth',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -175,7 +175,7 @@
 		$('#listMaps').closest('.widget-box').hide();
 		$.ajax({
 			dataType: 'json',
-			url: '/maps',
+			url: 'maps',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 				},
@@ -231,7 +231,7 @@
 		$.each(data, function(i, item) {
 			$.ajax({
 				dataType: 'text',
-				url: '/getmap',
+				url: 'getmap',
 				beforeSend: function(xhr) {
 					xhr.setRequestHeader('Password', getPassword()),
 					xhr.setRequestHeader('Map', item.map);
@@ -425,7 +425,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/pie',
+			url: 'pie',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -499,7 +499,7 @@
 		var items = [];
 		$.ajax({
 			dataType: 'json',
-			url: '/history',
+			url: 'history',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -543,7 +543,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/symbols',
+			url: 'symbols',
 			beforeSend: function(xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 				},
@@ -810,7 +810,7 @@
 		$.ajax({
 			dataType: 'json',
 			type: 'GET',
-			url: '/actions',
+			url: 'actions',
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword())
 			},
@@ -1014,7 +1014,7 @@
 					global: false,
 					dataType: 'json',
 					type: 'GET',
-					url: '/auth',
+					url: 'auth',
 					beforeSend: function (xhr) {
 						xhr.setRequestHeader('Password', password)
 					},
