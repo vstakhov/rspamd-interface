@@ -586,7 +586,7 @@
 		var spamUploader = new qq.FineUploader({
 			element: $('#uploadSpamFiles')[0],
 			request: {
-				endpoint: '/learnspam',
+				endpoint: 'learnspam',
 				customHeaders: {
 					'Password': getPassword()
 				}
@@ -622,7 +622,7 @@
 		var hamUploader = new qq.FineUploader({
 			element: $('#uploadHamFiles')[0],
 			request: {
-				endpoint: '/learnham',
+				endpoint: 'learnham',
 				customHeaders: {
 					'Password': getPassword()
 				}
@@ -672,11 +672,11 @@
 	// @upload text
 	function uploadText(data, source) {
 		if (source === 'spam') {
-			var url = '/learnspam'
+			var url = 'learnspam'
 		} if (source === 'ham') {
-			var url = '/learnham'
+			var url = 'learnham'
 		} if (source === 'scan') {
-			var url = '/scan'
+			var url = 'scan'
 		};
 		$.ajax({
 			data: data,
@@ -709,7 +709,7 @@
 	// @upload text
 	function scanText(data) {
 
-		var url = '/scan';
+		var url = 'scan';
 		var items = [];
 
 		$.ajax({
@@ -720,13 +720,14 @@
 			beforeSend: function (xhr) {
 				xhr.setRequestHeader('Password', getPassword());
 			},
-			success: function(data) {
+			success: function(input) {
+				data = input.default;
 				if (data.action) {
 					alertMessage('alert-success', 'Data successfully scanned');
 
 					if (data.action === 'clean'||'no action') {
 						var action = 'label-success'
-					} if (data.action === 'rewrite subject'||'add heeader'||'probable spam') {
+					} if (data.action === 'rewrite subject'||'add header'||'probable spam') {
 						var action = 'label-warning'
 					} if (data.action === 'spam') {
 						var action = 'label-important'
@@ -742,8 +743,10 @@
 						'</tr></tbody>')
 					.insertAfter('#scanOutput thead');
 
-					$.each(data.symbols, function(i, item) {
-						items.push('<div class="cell-overflow" tabindex="1">'+ item.name + ': ' + item.weight + '</div>');
+					$.each(data, function(i, item) {
+						if(typeof item == 'object') {
+							items.push('<div class="cell-overflow" tabindex="1">'+ item.name + ': ' + item.score + '</div>');
+						}
 						});
 					$('<td/>', { id: 'tmpSymbols', html: items.join('') }).appendTo('#scanResult');
 
@@ -878,7 +881,7 @@
 	// @upload edited actions
 	$(document).on('submit', '#actionsForm', function() {
 		var inputs = $('#actionsForm :input[type="slider"]');
-		var url = '/saveactions';
+		var url = 'saveactions';
 		var values = [];
 		// Rspamd order: [spam,probable_spam,greylist]
 		values[0] = parseFloat(inputs[2].value)
