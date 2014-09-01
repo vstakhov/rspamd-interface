@@ -838,9 +838,11 @@
 			success: function(data) {
 				// Order of sliders greylist -> probable spam -> spam
 				items = []	
+				var min = 0
+				var max = Number.MIN_VALUE
 				$.each(data, function(i, item) {
 					var idx = -1;
-					if (item.action === 'add_header') {
+					if (item.action === 'add header') {
 						var label = 'Probably Spam';
 						idx = 1;
 					} else if (item.action === 'greylist') {
@@ -859,9 +861,15 @@
 								'</div>' +
 							'</div>';
 					}
+					if (item.value > max) {
+						max = item.value;
+					}
+					if (item.value < min) {
+						min = item.value;
+					}
 				});
 				$('<form/>', { id: 'actionsForm', class: 'form-horizontal', html: items.join('')}).appendTo('#actionsBody');
-				initSliders();
+				initSliders(min, max);
 				$('<br><div class="control-group"><div class="controls slider-controls"><button class="btn" type="submit">Save actions</button</p></div></div>').appendTo('#actionsForm');
 			}
 		 });
@@ -876,12 +884,12 @@
 
 
 	// @init actions slider
-	function initSliders() {
+	function initSliders(min, max) {
 		$('.slider').each(function() {
 			$(this).slider({
-				from: 0,
-				to: 100,
-				scale: ['Not Spam', '|', '|', '|', '|', '|', '|', 'Spam'],
+				from: min,
+				to: max,
+				scale: ['|', '|', '|', '|', '|', '|', '|', '|'],
 				step: 1,
 				round: 10,
 				limits: false,
