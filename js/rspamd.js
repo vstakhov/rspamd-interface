@@ -1,6 +1,7 @@
 /*
     Rspamd javascript control interface.
     Copyright (C) 2012-2013 Anton Simonov <untone@gmail.com>
+    Copyright (C) 2014 Vsevolod Stakhov <vsevolod@highsecure.ru>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -25,7 +26,7 @@
 	$('#disconnect').on('click', function(event) {
 		cleanCredentials();
 		connectRSPAMD();
-		//window.location.reload();
+		// window.location.reload();
 		return false;
 		});
 	$('#refresh').on('click', function(event) {
@@ -39,7 +40,7 @@
 		} catch (e) {
 			return false;
 		}
-		//return false;
+		// return false;
 	}
 
 	// @return password
@@ -55,10 +56,11 @@
 
 	// @return session state
 	function sessionState() {
-		if ( (supportsSessionStorage() && (sessionStorage.getItem('Password') !== null)) || (!supportsSessionStorage() && ($.cookie('rspamdsession')) !== null)) {
-			return true
+		if ( (supportsSessionStorage() && (sessionStorage.getItem('Password') !== null)) 
+				|| (!supportsSessionStorage() && ($.cookie('rspamdsession')) !== null)) {
+			return true;
 		} else {
-			return false
+			return false;
 		}
 	}
 
@@ -83,13 +85,13 @@
 			type: 'GET',
 			url: 'auth',
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
 				if (data.auth === 'failed') {
 					connectRSPAMD();
 				}
-			},
+			}
 		});
 	}
 
@@ -100,11 +102,11 @@
 			type: 'GET',
 			url: 'auth',
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
 				saveCredentials(data, password);
-			},
+			}
 		});
 	}
 
@@ -177,7 +179,7 @@
 			dataType: 'json',
 			url: 'maps',
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 				},
 			error: function() {
 				alertMessage('alert-error', 'Cannot receive maps data');
@@ -245,11 +247,13 @@
 					} else {
 						var disabled = '';
 					}
-				$('<form class="form-horizontal form-map" method="post "action="/savemap" data-type="map" id="' + item.map + '" style="display:none">' + 
-				'<textarea class="list-textarea"' + disabled + '>' + text + '</textarea>' + 
+				$('<form class="form-horizontal form-map" method="post "action="/savemap" data-type="map" id="' 
+					+ item.map + '" style="display:none">' + 
+				'<textarea class="list-textarea"' + disabled + '>' + text 
+				+ '</textarea>' + 
 				'</form').appendTo('#modalBody');
 				}
-			})
+			});
 		});
 	}
 
@@ -296,20 +300,23 @@
 			} else {
 				var data = JSON.parse(sessionStorage.getItem('Credentials'));
 			}
-			var stat_w = []
+			var stat_w = [];
 			$.each(data, function(i, item) {
 				if (i == 'auth') {
 					// @none
 				} else if (i == 'error') {
 					// @none
 				} else if (i == 'version') {
-					var widget = '<div class="left"><strong>' + item + '</strong>' + i + '</div>';
+					var widget = '<div class="left"><strong>' + item + '</strong>' + 
+						i + '</div>';
 					$(widget).appendTo(widgets);
 				} else if (i == 'uptime') {
-					var widget = '<div class="right"><strong>' + msToTime(item) + '</strong>' + i + '</div>';
+					var widget = '<div class="right"><strong>' + msToTime(item) + 
+						'</strong>' + i + '</div>';
 					$(widget).appendTo(widgets);
 				} else {
-					var widget = '<li class="stat-box"><div class="widget"><strong>' + item + '</strong>' + i + '</div></li>';
+					var widget = '<li class="stat-box"><div class="widget"><strong>' +
+						item + '</strong>' + i + '</div></li>';
 					if (i == 'scanned') {
 						stat_w[0] = widget;
 					}
@@ -357,69 +364,10 @@
 		return false;
 	});
 
-	//close modal without saving
+	// close modal without saving
 	$(document).on('click', '[data-dismiss="modal"]', function(e) {
 		$('#modalBody form').hide();
 	});
-
-	// @get chart
-	//function getChart() {
-	//	var options = {
-	//		lines: {
-	//			show: true,
-	//			fill: true,
-	//			fillColor: { colors: [ {opacity: 0.5}, {opacity: 0.5} ] }
-	//		},
-	//		legend: {
-	//			show: false
-	//		},
-	//		series: {
-	//			pie: {
-	//				show: true,
-	//				radius: 1,
-	//				label: {
-	//					show: true,
-	//					radius: 3/4,
-	//					formatter: function(label, series){
-	//						return '<div style="font-size:8pt;text-align:center;padding:2px;color:white;">'+label+'<br/>'+Math.round(series.percent)+'%</div>';
-	//				},
-	//				background: {
-	//					opacity: 0.5,
-	//					color: '#000'
-	//				}
-	//			}
-	//		}
-	//	}
-	//};
-
-	//var data = [];
-	//var placeholder = $('#chart');
-	//var alreadyFetched = {};
-
-	//$.plot(placeholder, data, options);
-
-	//$(placeholder).ready(function () {
-
-	//	var dataurl = '/pie';
-
-	//	function onDataReceived(series) {
-	//		$.plot(placeholder, series, options);
-	//		$(placeholder).removeAttr('style');
-	//		}
-	//	$.ajax({
-	//		url: dataurl,
-	//		beforeSend: function(xhr) {
-	//			xhr.setRequestHeader('Password', getPassword())
-	//			},
-	//		method: 'GET',
-	//		dataType: 'json',
-	//		success: onDataReceived,
-	//		error: function() {
-	//			$(placeholder).closest('.widget-box').addClass('unavailable');
-	//			}
-	//		});
-	//	});
-	//}
 
 	function getChart() {
 		$.ajax({
@@ -427,7 +375,7 @@
 			type: 'GET',
 			url: 'pie',
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
 				console.log(data);
@@ -457,7 +405,8 @@
 										color: '#333333',
 										connectorColor: '#cbcbcb',
 										formatter: function() {
-											return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.percentage, 1) +' %';
+											return '<b>'+ this.point.name +'</b>: '+ 
+											Highcharts.numberFormat(this.percentage, 1) + '%';
 										}
 									}
 								}
@@ -476,22 +425,22 @@
 	}
 
 	// @get history log
-	//function getChart() {
-	//	//console.log(data)
-	//	$.ajax({
-	//		dataType: 'json',
-	//		url: './pie',
-	//		beforeSend: function(xhr) {
-	//			xhr.setRequestHeader('Password', getPassword())
-	//		},
-	//		error: function() {
-	//			alertMessage('alert-error', 'Cannot receive history');
-	//		},
-	//		success: function(data) {
-	//			console.log(data);
-	//		}
-	//	});
-	//}
+	// function getChart() {
+	// //console.log(data)
+	// $.ajax({
+	// dataType: 'json',
+	// url: './pie',
+	// beforeSend: function(xhr) {
+	// xhr.setRequestHeader('Password', getPassword())
+	// },
+	// error: function() {
+	// alertMessage('alert-error', 'Cannot receive history');
+	// },
+	// success: function(data) {
+	// console.log(data);
+	// }
+	// });
+	// }
 
 
 	// @get history log
@@ -501,7 +450,7 @@
 			dataType: 'json',
 			url: 'history',
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			error: function() {
 				alertMessage('alert-error', 'Cannot receive history');
@@ -509,15 +458,15 @@
 			success: function(data) {
 				$.each(data, function(i, item) {
 					if (item.action === 'clean'||'no action') {
-						var action = 'label-success'
+						var action = 'label-success';
 					} if (item.action === 'rewrite subject'||'add header'||'probable spam') {
-						var action = 'label-warning'
+						var action = 'label-warning';
 					} if (item.action === 'spam') {
-						var action = 'label-important'
+						var action = 'label-important';
 					} if (item.score <= item.required_score) {
-						var score = 'label-success'
+						var score = 'label-success';
 					} if (item.score >= item.required_score) {
-						var score = 'label-important'
+						var score = 'label-important';
 					}
 					items.push(
 						'<tr><td>' + item.time + '</td>' +
@@ -531,7 +480,10 @@
 						'<td><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user +  '</div></td></tr>');
 				});
 				$('<tbody/>', {html: items.join('')}).insertAfter('#historyLog thead');
-				$('#historyLog').tablesorter({sortList: [[0,1]]}).paginateTable({ rowsPerPage: 20 }, {textExtraction: function(node) { var pat=/^[0-9]+/; return pat.exec(node.innerHTML);
+				$('#historyLog').tablesorter({sortList: [[0,1]]}).paginateTable({ rowsPerPage: 20 }, 
+					{textExtraction: function(node) { 
+						var pat=/^[0-9]+/; 
+						return pat.exec(node.innerHTML);
 				}});
 			}
 		});
@@ -555,8 +507,8 @@
 			type: 'GET',
 			url: 'symbols',
 			beforeSend: function(xhr) {
-				xhr.setRequestHeader('Password', getPassword())
-				},
+				xhr.setRequestHeader('Password', getPassword());
+			},
 			success: function(data) {
 				$.each(data[0].rules, function(i, item) {
 					var max = 20;
@@ -576,7 +528,13 @@
 										'</div>' +
 									'</div>');
 					});
-				$('<form/>', { id: 'symbolsForm', method: 'post', action: '/savesymbols', 'data-type': 'symbols', style: 'display:none', html: items.join('') }).appendTo('#modalBody');
+				$('<form/>', { 
+					id: 'symbolsForm', 
+					method: 'post', 
+					action: '/savesymbols', 
+					'data-type': 'symbols',
+					style: 'display:none', 
+					html: items.join('') }).appendTo('#modalBody');
 				initSpinners();
 			},
 			error:  function(data) {
@@ -690,11 +648,11 @@
 	// @upload text
 	function uploadText(data, source) {
 		if (source === 'spam') {
-			var url = 'learnspam'
+			var url = 'learnspam';
 		} if (source === 'ham') {
-			var url = 'learnham'
+			var url = 'learnham';
 		} if (source === 'scan') {
-			var url = 'scan'
+			var url = 'scan';
 		};
 		$.ajax({
 			data: data,
@@ -710,9 +668,9 @@
 					alertMessage('alert-success', 'Data successfully uploaded');
 				}
 			},
-			//error: function() {
-			//	alertMessage('alert-error', 'Cannot upload data');
-			//},
+			// error: function() {
+			// alertMessage('alert-error', 'Cannot upload data');
+			// },
 			statusCode: {
 				404: function() {
 					alertMessage('alert-error', 'Cannot upload data, no server found');
@@ -739,20 +697,20 @@
 				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(input) {
-				data = input.default;
+				var data = input['default'];
 				if (data.action) {
 					alertMessage('alert-success', 'Data successfully scanned');
 
 					if (data.action === 'clean'||'no action') {
-						var action = 'label-success'
+						var action = 'label-success';
 					} if (data.action === 'rewrite subject'||'add header'||'probable spam') {
-						var action = 'label-warning'
+						var action = 'label-warning';
 					} if (data.action === 'spam') {
-						var action = 'label-important'
+						var action = 'label-important';
 					} if (data.score <= data.required_score) {
-						var score = 'label-success'
+						var score = 'label-success';
 					} if (data.score >= data.required_score) {
-						var score = 'label-important'
+						var score = 'label-important';
 					}
 
 					$('<tbody id="tmpBody"><tr>' +
@@ -833,13 +791,13 @@
 			type: 'GET',
 			url: 'actions',
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
 				// Order of sliders greylist -> probable spam -> spam
-				items = []	
-				var min = 0
-				var max = Number.MIN_VALUE
+				items = [];
+				var min = 0;
+				var max = Number.MIN_VALUE;
 				$.each(data, function(i, item) {
 					var idx = -1;
 					if (item.action === 'add header') {
@@ -907,16 +865,16 @@
 		var url = 'saveactions';
 		var values = [];
 		// Rspamd order: [spam,probable_spam,greylist]
-		values[0] = parseFloat(inputs[2].value)
-		values[1] = parseFloat(inputs[1].value)
-		values[2] = parseFloat(inputs[0].value)
+		values[0] = parseFloat(inputs[2].value);
+		values[1] = parseFloat(inputs[1].value);
+		values[2] = parseFloat(inputs[0].value);
 		$.ajax({
 			data: JSON.stringify(values),
 			dataType: 'json',
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', getPassword())
+				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function() {
 				alertMessage('alert-success', 'Actions successfully saved');
@@ -944,8 +902,8 @@
 	// @save forms from modal
 	$(document).on('click', '#modalSave', function() {
 		var form = $('#modalBody').children().filter(':visible');
-		//var map = $(form).data('map');
-		//var type = $(form).data('type');
+		// var map = $(form).data('map');
+		// var type = $(form).data('type');
 		var action = $(form).attr('action');
 		var id = $(form).attr('id');
 		var type = $(form).data('type');
@@ -998,14 +956,14 @@
 			type: 'POST',
 			url: url,
 			beforeSend: function (xhr) {
-				xhr.setRequestHeader('Password', getPassword())
-				},
+				xhr.setRequestHeader('Password', getPassword());
+			},
 			success: function() {
 				alertMessage('alert-modal alert-success', 'Symbols successfully saved');
-				},
+			},
 			error:  function(data) {
 				alertMessage('alert-modal alert-error', 'Oops, password is incorrect');
-				},
+			},
 			statusCode: {
 				404: function() {
 					alertMessage('alert-modal alert-error', 'Cannot auth, host not found');
@@ -1042,7 +1000,7 @@
 					type: 'GET',
 					url: 'auth',
 					beforeSend: function (xhr) {
-						xhr.setRequestHeader('Password', password)
+						xhr.setRequestHeader('Password', password);
 					},
 					success: function(data) {
 						if (data.auth === 'failed') {
@@ -1096,4 +1054,5 @@
 
 
 // end
-});})()
+});
+})();
