@@ -537,6 +537,16 @@
 		});
 	}
 
+	function decimalStep(number) {
+		var digits = ((+number).toFixed(20)).replace(/^-?\d*\.?|0+$/g, '').length;
+		if (digits == 0 || digits > 4) {
+			return 0.1;	
+		}
+		else {
+			return 1.0 / (Math.pow(10, digits));
+		}
+	}
+
 	// @get symbols into modal form
 	function getSymbols() {
 		var items = [];
@@ -549,12 +559,20 @@
 				},
 			success: function(data) {
 				$.each(data[0].rules, function(i, item) {
+					var max = 20;
+					var min = -20;
+					if (item.weight > max) {
+						max = item.weight * 2;
+					}
+					if (item.weight < min) {
+						min = item.weight * 2;
+					}
 					items.push('	<div class="row-fluid row-bordered" data-slider="hover">' +
 										'<label class="span5" for="' + item.symbol + '" title="' + item.description + '">' +
 											'<code>' +  item.symbol + '</code><small class="symbol-description">' + item.description + '</small>' +
 										'</label>' +
 										'<div class="span4 spin-cell">' + 
-											'<input class="numeric" autocomplete="off" "type="number" class="input-mini" min="-20" max="20" step="0.1" tabindex="1" value="' + item.weight + '" id="' + item.symbol + '">' +
+											'<input class="numeric" autocomplete="off" "type="number" class="input-mini" min="' + min + '" max="' + max + '" step="' + decimalStep(item.weight) + '" tabindex="1" value="' + item.weight + '" id="' + item.symbol + '">' +
 										'</div>' +
 									'</div>');
 					});
@@ -852,9 +870,6 @@
 	// @init spinners
 	function initSpinners() {
 		$('.numeric').kendoNumericTextBox({
-			min: -20,
-			max: 20,
-			step: 0.1,
 			decimals: 1
 		});
 	}
