@@ -153,6 +153,20 @@
 		$('#historyLog tbody').remove();
 		$('#modalBody').empty();
 	}
+	
+	function isLogged() {
+		if (!supportsSessionStorage()) {
+			if ($.cookie('rspamdpasswd') != null) {
+				return true;
+			}
+		}
+		else {
+			if (sessionStorage.getItem('Password') != null) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	// @alert popover
 	function alertMessage(alertState, alertText) {
@@ -185,6 +199,7 @@
 				alertMessage('alert-error', 'Cannot receive maps data');
 			},
 			success: function(data) {
+				$('#listMaps').empty();
 				saveMaps(data);
 				getMapById();
 				$.each(data, function(i, item) {
@@ -510,6 +525,7 @@
 				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
+				$('#modalBody').empty();
 				$.each(data[0].rules, function(i, item) {
 					var max = 20;
 					var min = -20;
@@ -795,6 +811,8 @@
 			},
 			success: function(data) {
 				// Order of sliders greylist -> probable spam -> spam
+				$('#actionsBody').empty();
+				$('#actionsForm').empty();
 				items = [];
 				var min = 0;
 				var max = Number.MIN_VALUE;
@@ -820,13 +838,15 @@
 							'</div>';
 					}
 					if (item.value > max) {
-						max = item.value;
+						max = item.value * 2;
 					}
 					if (item.value < min) {
 						min = item.value;
 					}
 				});
-				$('<form/>', { id: 'actionsForm', class: 'form-horizontal', html: items.join('')}).appendTo('#actionsBody');
+				$('<form/>', 
+					{ id: 'actionsForm', class: 'form-horizontal', html: items.join('') }
+				).appendTo('#actionsBody');
 				initSliders(min, max);
 				$('<br><div class="control-group"><div class="controls slider-controls"><button class="btn" type="submit">Save actions</button</p></div></div>').appendTo('#actionsForm');
 			}
@@ -976,9 +996,11 @@
 
 	// @connect to server
 	function connectRSPAMD() {
-
-			cleanCredentials();
-
+			if (isLogged()) {
+				displayUI();
+				return;
+			} 
+			
 			var nav = $('#navBar');
 			var ui = $('#mainUI');
 			var dialog = $('#connectDialog');
@@ -1011,7 +1033,6 @@
 							saveCredentials(data, password);
 							$(dialog).hide();
 							$(backdrop).hide();
-							$(disconnect).show();
 							displayUI();
 						}
 					},
@@ -1027,11 +1048,10 @@
 			});
 	}
 
-	connectRSPAMD();
-
 	function displayUI() {
-
 		// @toggle auth and main
+		
+		var disconnect = $('#navBar .pull-right');
 		statWidgets();
 		$('#mainUI').show();
 		$('#progress').show();
@@ -1042,7 +1062,10 @@
 		getHistory();
 		getChart();
 		$('#progress').hide();
+		$(disconnect).show();
 	}
+	
+	connectRSPAMD();
 
 	$(document).ajaxStart(function() {
 		$('#navBar').addClass('loading');
