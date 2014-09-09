@@ -46,5 +46,5 @@ Just enter a password for webui access and you are ready.
 Contact information.
 ====================
 
-Rspamd interface is GPLv3 licensed software. For all questions related to this
+Rspamd interface is distributed under the terms of [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0). For all questions related to this
 product please email to vsevolod <at> highsecure.ru.
