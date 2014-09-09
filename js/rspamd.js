@@ -1,20 +1,18 @@
 /*
-    Rspamd javascript control interface.
-    Copyright (C) 2012-2013 Anton Simonov <untone@gmail.com>
-    Copyright (C) 2014 Vsevolod Stakhov <vsevolod@highsecure.ru>
+   Rspamd javascript control interface.
+   Copyright (C) 2012-2013 Anton Simonov <untone@gmail.com>
+   Copyright (C) 2014 Vsevolod Stakhov <vsevolod@highsecure.ru>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 */
 
 
@@ -393,48 +391,22 @@
 				xhr.setRequestHeader('Password', getPassword());
 			},
 			success: function(data) {
-				console.log(data);
-
+				var testdata = [
+					{ label: "Series A",  data: 0.2063},
+					{ label: "Series B",  data: 38888}
+				];
 				$(function () {
-					var chart;
-					$(document).ready(function() {
-						chart = new Highcharts.Chart({
-							chart: {
-								renderTo: 'chart',
-								plotBackgroundColor: null,
-								plotBorderWidth: null,
-								plotShadow: false
-							},
-							title: {
-								text: null
-							},
-							tooltip: {
-								enabled: false
-							},
-							plotOptions: {
-								pie: {
-									allowPointSelect: true,
-									cursor: 'default',
-									dataLabels: {
-										enabled: true,
-										color: '#333333',
-										connectorColor: '#cbcbcb',
-										formatter: function() {
-											return '<b>'+ this.point.name +'</b>: '+ 
-											Highcharts.numberFormat(this.percentage, 1) + '%';
-										}
-									}
-								}
-							},
-							series: [{
-								type: 'pie',
-								name: 'Messages',
-								data: data
-							}]
-						});
+					$.plot($("#chart"), data, {
+						series: {
+							pie: {
+								show: true
+							}
+						},
+						legend: {
+							show: false
+						}
 					});
 				});
-
 			}
 		});
 	}
@@ -551,7 +523,6 @@
 					'data-type': 'symbols',
 					style: 'display:none', 
 					html: items.join('') }).appendTo('#modalBody');
-				initSpinners();
 			},
 			error:  function(data) {
 				alertMessage('alert-error', 'Cannot receive data');
@@ -847,36 +818,9 @@
 				$('<form/>', 
 					{ id: 'actionsForm', class: 'form-horizontal', html: items.join('') }
 				).appendTo('#actionsBody');
-				initSliders(min, max);
 				$('<br><div class="control-group"><div class="controls slider-controls"><button class="btn" type="submit">Save actions</button</p></div></div>').appendTo('#actionsForm');
 			}
 		 });
-	}
-
-	// @init spinners
-	function initSpinners() {
-		$('.numeric').kendoNumericTextBox({
-			decimals: 1
-		});
-	}
-
-
-	// @init actions slider
-	function initSliders(min, max) {
-		$('.slider').each(function() {
-			$(this).slider({
-				from: min,
-				to: max,
-				scale: ['|', '|', '|', '|', '|', '|', '|', '|'],
-				step: 1,
-				round: 10,
-				limits: false,
-				format: {
-					format: '0'
-				},
-				skin: "round_plastic"
-			});
-		});
 	}
 
 	// @upload edited actions

@@ -1,4 +1,2 @@
-http://egorkhmelev.github.com/jslider/
 https://github.com/valums/file-uploader/
 https://github.com/flot/flot
-http://demos.kendoui.com/web/numerictextbox/index.html

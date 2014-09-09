@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <!--
 /*
-    Rspamd javascript control interface.
-    Copyright (C) 2012-2013 Anton Simonov <untone@gmail.com>
+   Rspamd javascript control interface.
+   Copyright (C) 2012-2013 Anton Simonov <untone@gmail.com>
+   Copyright (C) 2014 Vsevolod Stakhov <vsevolod@highsecure.ru>
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+     http://www.apache.org/licenses/LICENSE-2.0
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 -->
 <html lang="en">
@@ -25,13 +25,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="description" content="">
 	<meta name="author" content="">
-	<link href="./css/fineuploader.css" rel="stylesheet">
+	<link href="//cdnjs.cloudflare.com/ajax/libs/file-uploader/3.7.0/fineuploader.min.css" rel="stylesheet">
 	<link href="./css/jquery.slider.min.css" rel="stylesheet">
 	<link href="./css/bootstrap.css" rel="stylesheet">
-	<link href="./css/bootstrap-responsive.css" rel="stylesheet">
+	<!--<link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">-->
 	<link href="./css/uniform.css" rel="stylesheet">
 	<link href="./css/rspamd.css" rel="stylesheet">
-	<!-- link rel="shortcut icon" href="favicon.ico" -->
 </head>
 
 <body>
@@ -272,16 +271,15 @@
 </div>
 
 <div id="backDrop" class="modal-backdrop fade in" style="display:none"></div>
-
-<script src="./js/vendor/jquery-1.8.3.min.js"></script>
-<script src="./js/vendor/bootstrap.min.js"></script>
-<script src="./js/vendor/kendo.core.min.js"></script>
-<script src="./js/kendo.numerictextbox.min.js"></script>
-<script src="./js/jquery.cookie.js"></script>
-<script src="./js/jquery.fineuploader.min.js"></script>
-<script src="./js/jquery.slider.min.js"></script>
-<script src="./js/highcharts.js"></script>
-<script src="./js/jquery.tablesorter.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/file-uploader/3.7.0/fineuploader.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/excanvas.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.pie.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.17.7/js/jquery.tablesorter.widgets.min.js"></script>
 <script src="./js/jquery.paginatetable.js"></script>
 <script src="./js/rspamd.js"></script>
 
