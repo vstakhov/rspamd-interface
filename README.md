@@ -17,6 +17,7 @@ options {
         dynamic_conf = /var/lib/rspamd/rspamd_dynamic;
 ...
 }
+~~~
 
 Please note that this path must have write access for `rspamd` user.
 
