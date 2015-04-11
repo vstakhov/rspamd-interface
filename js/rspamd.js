@@ -619,6 +619,42 @@
 			}
 		});
 
+		var fuzzyUploader = new qq.FineUploader({
+			element: $('#uploadFuzzyFiles')[0],
+			request: {
+				endpoint: 'learnfuzzy',
+				customHeaders: {
+					'Password': getPassword()
+				}
+			},
+			validation: {
+				allowedExtensions: ['eml', 'msg', 'txt', 'html'],
+				sizeLimit: 52428800
+			},
+			autoUpload: false,
+			text: {
+				uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+			},
+			retry: {
+				enableAuto: true
+			},
+			template: '<div class="qq-uploader">' +
+						'<pre class="qq-upload-drop-area span12"><span>{dragZoneText}</span></pre>' +
+						'<div class="qq-upload-button btn btn-success">{uploadButtonText}</div>' +
+						'<span class="qq-drop-processing"><span>{dropProcessingText}</span><span class="qq-drop-processing-spinner"></span></span>' +
+						'<ul class="qq-upload-list"></ul>' +
+						'</div>',
+			classes: {
+				success: 'alert-success',
+				fail: 'alert-error'
+			},
+			debug: true,
+			callbacks: {
+				onError: function(){
+					alertMessage('alert-error', 'Cannot upload data');
+				}
+			}
+		});
 		// @upload spam button
 		$('#uploadSpamTrigger').on('click', function() {
 			spamUploader.uploadStoredFiles();
@@ -629,7 +665,11 @@
 			hamUploader.uploadStoredFiles();
 			return false;
 			});
-
+		// @upload fuzzy data button
+		$('#uploadFuzzyTrigger').on('click', function() {
+			fuzzyUploader.uploadStoredFiles();
+			return false;
+			});
 	}
 
 	// @upload text
@@ -638,7 +678,9 @@
 			var url = 'learnspam';
 		} if (source === 'ham') {
 			var url = 'learnham';
-		} if (source === 'scan') {
+		} if (source=='fuzzy') {
+			var url='learnfuzzy';
+		};if (source === 'scan') {
 			var url = 'scan';
 		};
 		$.ajax({
