@@ -627,6 +627,7 @@
 					'Password': getPassword()
 				}
 			},
+			flag: $('#fuzzyFlagUpload').val(),
 			validation: {
 				allowedExtensions: ['eml', 'msg', 'txt', 'html'],
 				sizeLimit: 52428800
@@ -665,7 +666,6 @@
 			hamUploader.uploadStoredFiles();
 			return false;
 			});
-		// @upload fuzzy data button
 		$('#uploadFuzzyTrigger').on('click', function() {
 			fuzzyUploader.uploadStoredFiles();
 			return false;
@@ -793,7 +793,18 @@
 	// @init upload
 	$('[data-upload]').on('click', function() {
 		var source = $(this).data('upload');
-		var data = $('#' + source + 'TextSource').val();
+		if(source=='fuzzy')
+		{
+			//To access the proper 		
+			var data = new String($('#' + source + 'TextSource').val());		
+			data.flag=$('#fuzzyFlagText').val();
+			data.string=data.toString();
+		
+		}
+		else
+			var data = $('#' + source + 'TextSource').val();
+		if(source=='fuzzy')
+			data.flag=$('#fuzzyFlagText').val();
 		if (data.length > 0) {
 			if (source == 'scan') {
 				scanText(data);

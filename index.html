@@ -131,6 +131,14 @@
 						<div class="row-fluid">
 							<form class="span6 upload-form" id="uploadFuzzyForm">
 								<h5>Upload Fuzzy examples:</h5>
+								<div class="row-fluid">
+								<label class="pull-left">
+										Flag
+								</label>
+									<div class="pull-right span10">
+										<input id="fuzzyFlagUpload" class="slider" type="slider" value="0"></input>
+									</div>
+								</div>
 								<button id="uploadFuzzyTrigger" class="btn pull-right btn-upload-trigger"><i class="icon-upload"></i> Upload files</button>
 								<div id="uploadFuzzyFiles"></div>
 							</form>
@@ -153,6 +161,14 @@
 							<form class="span6">
 								<h5>Insert raw Fuzzy storage:</h5>
 								<textarea class="span5 upload-textarea" id="fuzzyTextSource" value=""></textarea>
+							<div class="row-fluid">
+								<label class="pull-left">
+										Flag
+								</label>
+									<div class="pull-right span10">
+										<input id="fuzzyFlagText" class="slider" type="slider" value="0"></input>
+									</div>
+							</div>
 								<p><button class="btn pull-right" data-upload="fuzzy"><i class="icon-upload"></i> Upload text</button></p>
 							</form>
 						</div>
