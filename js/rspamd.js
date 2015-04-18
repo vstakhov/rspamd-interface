@@ -618,6 +618,10 @@
 				}
 			}
 		});
+		
+		var data = new Object();
+		data.flag=$('#fuzzyFlagUpload').val();
+		data.weight=$('#fuzzyWeightUpload').val();
 
 		var fuzzyUploader = new qq.FineUploader({
 			element: $('#uploadFuzzyFiles')[0],
@@ -627,9 +631,8 @@
 					'Password': getPassword()
 				}
 			},
-			flag: $('#fuzzyFlagUpload').val(),
 			validation: {
-				allowedExtensions: ['eml', 'msg', 'txt', 'html'],
+				allowedExtensions: ['eml', 'msg', 'txt', 'html','pdf'],
 				sizeLimit: 52428800
 			},
 			autoUpload: false,
@@ -666,8 +669,10 @@
 			hamUploader.uploadStoredFiles();
 			return false;
 			});
+		// @upload fuzzy button
 		$('#uploadFuzzyTrigger').on('click', function() {
 			fuzzyUploader.uploadStoredFiles();
+			uploadText(data,'fuzzy');
 			return false;
 			});
 	}
@@ -798,13 +803,12 @@
 			//To access the proper 		
 			var data = new String($('#' + source + 'TextSource').val());		
 			data.flag=$('#fuzzyFlagText').val();
+			data.weigth=$('#fuzzyWeightText').val();
 			data.string=data.toString();
 		
 		}
 		else
 			var data = $('#' + source + 'TextSource').val();
-		if(source=='fuzzy')
-			data.flag=$('#fuzzyFlagText').val();
 		if (data.length > 0) {
 			if (source == 'scan') {
 				scanText(data);
