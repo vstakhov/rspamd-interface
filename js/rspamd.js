@@ -503,7 +503,7 @@
 									'<h4>' + group.name + '</h4>' +
 									'</div>');
 
-					$.each(group.rules, function(i, item.rules) {
+					$.each(group.rules, function(i, item) {
 						var max = 20;
 						var min = -20;
 						if (item.weight > max) {
