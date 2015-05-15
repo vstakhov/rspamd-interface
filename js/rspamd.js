@@ -500,7 +500,7 @@
 				$('#modalBody').empty();
 				$.each(data, function(i, group) {
 					items.push('	<div class="row-fluid row-bordered" data-slider="hover">' +
-									'<h4>' + group.name + '</h4>'
+									'<h4>' + group.name + '</h4>' +
 									'</div>');
 
 					$.each(group.rules, function(i, item.rules) {
