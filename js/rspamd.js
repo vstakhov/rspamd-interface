@@ -498,24 +498,30 @@
 			},
 			success: function(data) {
 				$('#modalBody').empty();
-				$.each(data[0].rules, function(i, item) {
-					var max = 20;
-					var min = -20;
-					if (item.weight > max) {
-						max = item.weight * 2;
-					}
-					if (item.weight < min) {
-						min = item.weight * 2;
-					}
+				$.each(data, function(i, group) {
 					items.push('	<div class="row-fluid row-bordered" data-slider="hover">' +
-										'<label class="span5" for="' + item.symbol + '" title="' + item.description + '">' +
-											'<code>' +  item.symbol + '</code><small class="symbol-description">' + item.description + '</small>' +
-										'</label>' +
-										'<div class="span4 spin-cell">' + 
-											'<input class="numeric" autocomplete="off" "type="number" class="input-mini" min="' + min + '" max="' + max + '" step="' + decimalStep(item.weight) + '" tabindex="1" value="' + item.weight + '" id="' + item.symbol + '">' +
-										'</div>' +
+									'<h4>' + group.name + '</h4>'
 									'</div>');
-					});
+
+					$.each(group.rules, function(i, item.rules) {
+						var max = 20;
+						var min = -20;
+						if (item.weight > max) {
+							max = item.weight * 2;
+						}
+						if (item.weight < min) {
+							min = item.weight * 2;
+						}
+						items.push('	<div class="row-fluid row-bordered" data-slider="hover">' +
+											'<label class="span5" for="' + item.symbol + '" title="' + item.description + '">' +
+												'<code>' +  item.symbol + '</code><small class="symbol-description">' + item.description + '</small>' +
+											'</label>' +
+											'<div class="span4 spin-cell">' + 
+												'<input class="numeric" autocomplete="off" "type="number" class="input-mini" min="' + min + '" max="' + max + '" step="' + decimalStep(item.weight) + '" tabindex="1" value="' + item.weight + '" id="' + item.symbol + '">' +
+											'</div>' +
+										'</div>');
+						});
+				});
 				$('<form/>', { 
 					id: 'symbolsForm', 
 					method: 'post', 
