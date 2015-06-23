@@ -964,7 +964,7 @@
 					xhr.setRequestHeader('Map', id);
 					xhr.setRequestHeader('Debug', true);
 				},
-				error: function() {
+				error: function(data) {
 					alertMessage('alert-modal alert-error', data.statusText);
 				},
 				success: function(data) {
