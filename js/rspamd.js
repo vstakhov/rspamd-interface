@@ -517,7 +517,11 @@
 												'<code>' +  item.symbol + '</code><small class="symbol-description">' + item.description + '</small>' +
 											'</label>' +
 											'<div class="span4 spin-cell">' + 
-												'<input class="numeric" autocomplete="off" "type="number" class="input-mini" min="' + min + '" max="' + max + '" step="' + decimalStep(item.weight) + '" tabindex="1" value="' + item.weight + '" id="' + item.symbol + '">' +
+												'<input class="numeric" autocomplete="off" "type="number" class="input-mini" min="' + 
+													min + '" max="' + 
+													max + '" step="' + decimalStep(item.weight) + 
+													'" tabindex="1" value="' + Number(item.weight).toFixed(2) +
+													 '" id="' + item.symbol + '">' +
 											'</div>' +
 										'</div>');
 						});
