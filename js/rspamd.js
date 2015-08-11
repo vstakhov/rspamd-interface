@@ -29,13 +29,7 @@
         });
         // @supports session storage
         function supportsSessionStorage() {
-            try {
-                return 'sessionStorage' in window && window['sessionStorage'] !== null;
-            }
-            catch (e) {
-                return false;
-            }
-            // return false;
+            return typeof(Storage) !== "undefined";
         }
         // @return password
         function getPassword() {
@@ -778,7 +772,7 @@
         $('[data-upload]').on('click', function () {
             var source = $(this).data('upload');
             if (source == 'fuzzy') {
-                //To access the proper 		
+                //To access the proper
                 var data = new String($('#' + source + 'TextSource').val());
                 data.flag = $('#fuzzyFlagText').val();
                 data.weigth = $('#fuzzyWeightText').val();
