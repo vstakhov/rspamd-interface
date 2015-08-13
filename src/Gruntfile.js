@@ -14,7 +14,7 @@ module.exports = function(grunt) {
         transform: [ require('grunt-react').browserify ]
       },
       client: {
-        src: ['components/**/*.jsx'],
+        src: ['components/**/*.jsx', 'common.js'],
         dest: 'build/bundle.js'
       }
     }
@@ -27,4 +27,3 @@ module.exports = function(grunt) {
     'browserify'
   ]);
 };
-

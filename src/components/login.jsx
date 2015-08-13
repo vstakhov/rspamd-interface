@@ -1,4 +1,5 @@
 var React = require('react');
+var Common = require('../common.js');
 var ReactBootstrap = require('react-bootstrap'),
   Modal = ReactBootstrap.Modal,
   Button = ReactBootstrap.Button,
@@ -9,7 +10,7 @@ module.exports = React.createClass({
     return {
       server: this.props.server,
       password: this.props.password,
-      show: this.props.parent.state.authenticated
+      show: true
     }
   },
 
@@ -18,7 +19,8 @@ module.exports = React.createClass({
   handleChange: function() {
     this.setState({
       server: this.refs.serverInput.getValue(),
-      password: this.refs.passwordInput.getValue()
+      password: this.refs.passwordInput.getValue(),
+      show: true
     });
   },
 
@@ -30,10 +32,11 @@ module.exports = React.createClass({
   },
 
   submit: function() {
-    localStorage.setItem('Password', this.state.password);
-    localStorage.setItem('Server', this.state.server);
+    Common.saveCredentials(this.state)
     var pstate = this.props.parent.state;
-    pstate.authenticated = true;
+    pstate.password = this.state.password;
+    pstate.server = this.state.server;
+    pstate.stage = 'got_auth';
     this.props.parent.setState(pstate);
     var lstate = this.state;
     lstate.show = false;
@@ -51,26 +54,26 @@ module.exports = React.createClass({
           <Modal.Body>
             <Input groupClassName='input-group'
                 label='Server'
-                labelClassName='label-class'
+                labelClassName='label'
                 placeholder='Server address'
                 ref='serverInput'
                 type='text'
                 bsStyle={this.validationState()}
                 hasFeedback
-                value={this.props.server}
+                value={this.state.server}
                 onChange={this.handleChange}/>
             <Input groupClassName='input-group'
-                  label='Password'
-                  labelClassName='label-class'
-                  placeholder='Server password'
-                  ref='passwordInput'
-                  type='password'
-                  value={this.props.password}
-                  onChange={this.handleChange}/>
+                label='Password'
+                labelClassName='label'
+                placeholder='Server password'
+                ref='passwordInput'
+                type='password'
+                value={this.state.password}
+                onChange={this.handleChange}/>
           </Modal.Body>
 
           <Modal.Footer>
-            <Button bsStyle='primary' onClick={submit}>Login</Button>
+            <Button bsStyle='primary' onClick={this.submit}>Login</Button>
           </Modal.Footer>
 
         </Modal.Dialog>

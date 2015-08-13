@@ -1,4 +1,5 @@
 var React = require('react');
+var Common = require('../common.js');
 var Router = require('react-router'),
   RouteHandler = Router.RouteHandler,
   Route = Router.Route;
@@ -11,71 +12,42 @@ var ReactRouterBootstrap = require('react-router-bootstrap'),
   NavItemLink = ReactRouterBootstrap.NavItemLink,
   ButtonLink = ReactRouterBootstrap.ButtonLink,
   ListGroupItemLink = ReactRouterBootstrap.ListGroupItemLink;
-
 var LoginForm = require('./login.jsx')
-function supportsSessionStorage() {
-  return typeof(Storage) !== "undefined";
-}
-
-function getAuthCredentials() {
-  var ret = {
-    authenticated: false,
-    server: 'localhost:11334',
-    password: '',
-    loaded: false
-  }
-  if (supportsSessionStorage()) {
-    ret.password = localStorage.getItem('Password');
-  } else {
-    ret.password = $.cookie('rspamdpasswd');
-  }
-
-  if (ret.password !== '') {
-    if (supportsSessionStorage()) {
-      ret.server = localStorage.getItem('Server');
-    } else {
-      ret.server = $.cookie('rspamdserver');
-    }
-    ret.authenticated = true;
-  }
-
-  return ret;
-}
-
-function ajaxURI(path, state) {
-  return 'http://' + state.server + path;
-}
 
 var App = React.createClass({
   getInitialState: function() {
-    return getAuthCredentials();
+    return Common.getAuthCredentials();
+  },
+
+  loadAjaxData: function() {
+    $.ajax({
+      dataType: 'json',
+      cache: false,
+      url: Common.ajaxURI('/auth', this.state),
+      data: {password: this.state.password},
+      success : function(data) {
+        var state = this.state;
+        state.stage = 'loaded';
+        state.data = data;
+        this.setState(state);
+      }.bind(this),
+      error : function() {
+        var state = this.state;
+        state.stage = 'need_auth';
+        this.setState(state);
+      }.bind(this)
+    });
   },
 
   componentDidMount: function() {
-    if (this.state.authenticated) {
-      $.ajax({
-        dataType: 'json',
-        cache: false,
-        url: ajaxURI('/auth', this.state),
-        data: {password: this.state.password},
-        success : function(data) {
-          var state = this.state;
-          state.loaded = true;
-          state.data = data;
-          this.setState(state);
-        }.bind(this),
-        error : function() {
-          var state = this.state;
-          state.authenticated = false;
-          this.setState(state);
-        }.bind(this)
-      });
+    if (this.state.stage = 'got_auth') {
+      this.loadAjaxData();
     }
   },
 
   render : function() {
 
-    if (this.state.loaded) {
+    if (this.state.stage === 'loaded') {
       return (
         <div>
           NavItemLink<br/>
@@ -105,12 +77,15 @@ var App = React.createClass({
           {this.state.data.toString()}
         </div>
       );
-    } else if (!this.state.authenticated) {
+    } else if (this.state.stage === 'need_auth') {
       /* Show login form */
       return <LoginForm server={this.state.server}
         password={this.state.password} parent={this}/>;
     }
-
+    else {
+      this.loadAjaxData();
+    }
+    
     return <div></div>;
   }
 });
