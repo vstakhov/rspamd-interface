@@ -6,6 +6,8 @@ var Router = require('react-router'),
 
 var ReactBootstrap = require('react-bootstrap'),
   Nav = ReactBootstrap.Nav,
+  Navbar = ReactBootstrap.Navbar,
+  NavItem = ReactBootstrap.NavItem,
   ListGroup = ReactBootstrap.ListGroup;
 
 var ReactRouterBootstrap = require('react-router-bootstrap'),
@@ -50,31 +52,16 @@ var App = React.createClass({
     if (this.state.stage === 'loaded') {
       return (
         <div>
-          NavItemLink<br/>
+          <Navbar brand={<a href="#">Rspamd interface</a>}>
           <Nav>
-            <NavItemLink params={{
-              someparam: 'hello'
-            }} to="destination">
-              Linky!
-            </NavItemLink>
+            <NavItem eventKey={1} to="status">Status</NavItem>
+            <NavItem eventKey={2} to="configuration">Configuration</NavItem>
+            <NavItem eventKey={2} to="learning">Learning</NavItem>
+            <NavItem eventKey={2} to="history">History</NavItem>
           </Nav>
-          <br/>
-          ButtonLink<br/>
-          <ButtonLink params={{
-            someparam: 'hello'
-          }} to="destination">
-            Linky!
-          </ButtonLink>
-          <br/>
-          <ListGroup>
-            <ListGroupItemLink params={{
-              someparam: 'hello'
-            }} to="destination">
-              Linky!
-            </ListGroupItemLink>
-          </ListGroup>
+          </Navbar>
           <RouteHandler/>
-          {this.state.data.toString()}
+          {JSON.stringify(this.state.data)}
         </div>
       );
     } else if (this.state.stage === 'need_auth') {
@@ -85,7 +72,7 @@ var App = React.createClass({
     else {
       this.loadAjaxData();
     }
-    
+
     return <div></div>;
   }
 });
@@ -98,7 +85,10 @@ var Destination = React.createClass({
 
 var routes = (
   <Route handler={App} path="/">
-    <Route handler={Destination} name="destination" path="destination/:someparam"/>
+    <Route handler={App} name="status" path="status/"/>
+    <Route handler={App} name="configuration" path="configuration/"/>
+    <Route handler={App} name="learning" path="learn/"/>
+    <Route handler={App} name="history" path="history/"/>
   </Route>
 );
 
