@@ -15,6 +15,7 @@ var ReactRouterBootstrap = require('react-router-bootstrap'),
   ButtonLink = ReactRouterBootstrap.ButtonLink,
   ListGroupItemLink = ReactRouterBootstrap.ListGroupItemLink;
 var LoginForm = require('./login.jsx')
+var Dashboard = require('./dashboard.jsx')
 
 var App = React.createClass({
   getInitialState: function() {
@@ -77,7 +78,7 @@ var App = React.createClass({
           </Nav>
           </Navbar>
           <RouteHandler/>
-          {JSON.stringify(this.state.data)}
+          <Dashboard server={this.state.server} password={this.state.password}/>
         </div>
       );
     } else if (this.state.stage === 'need_auth') {
@@ -90,12 +91,6 @@ var App = React.createClass({
     }
 
     return <div></div>;
-  }
-});
-
-var Destination = React.createClass({
-  render: function() {
-    return <div>You made it!</div>;
   }
 });
 
