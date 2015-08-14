@@ -16,11 +16,15 @@ module.exports = React.createClass({
 
   validationRe: /^\S+:\d{2,5}$/,
 
-  handleChange: function() {
+  handleChangeServer: function() {
     this.setState({
-      server: this.refs.serverInput.getValue(),
-      password: this.refs.passwordInput.getValue(),
-      show: true
+      server: this.refs.serverInput.getValue()
+    });
+  },
+
+  handleChangePassword: function() {
+    this.setState({
+      password: this.refs.passwordInput.getValue()
     });
   },
 
@@ -33,14 +37,10 @@ module.exports = React.createClass({
 
   submit: function() {
     Common.saveCredentials(this.state)
-    var pstate = this.props.parent.state;
-    pstate.password = this.state.password;
-    pstate.server = this.state.server;
-    pstate.stage = 'got_auth';
-    this.props.parent.setState(pstate);
-    var lstate = this.state;
-    lstate.show = false;
-    this.setState(lstate);
+    this.props.onSubmit(this.state.server, this.state.password)
+    this.setState({
+      show: false
+    });
   },
 
   render: function() {
@@ -61,7 +61,7 @@ module.exports = React.createClass({
                 bsStyle={this.validationState()}
                 hasFeedback
                 value={this.state.server}
-                onChange={this.handleChange}/>
+                onChange={this.handleChangeServer}/>
             <Input groupClassName='input-group'
                 label='Password'
                 labelClassName='label'
@@ -69,7 +69,7 @@ module.exports = React.createClass({
                 ref='passwordInput'
                 type='password'
                 value={this.state.password}
-                onChange={this.handleChange}/>
+                onChange={this.handleChangePassword}/>
           </Modal.Body>
 
           <Modal.Footer>

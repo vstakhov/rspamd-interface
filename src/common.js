@@ -26,6 +26,7 @@ module.exports = {
 
     return ret;
   },
+  
   saveCredentials: function(cred) {
     if (this.supportsSessionStorage()) {
       localStorage.setItem('Password', cred.password);
@@ -36,6 +37,18 @@ module.exports = {
       $.cookie('rspamdpasswd', cred.password);
     }
   },
+
+  cleanCredentials: function() {
+    if (this.supportsSessionStorage()) {
+      localStorage.removeItem('Password');
+      localStorage.removeItem('Server');
+    }
+    else {
+      $.cookie('rspamdserver', '');
+      $.cookie('rspamdpasswd', '');
+    }
+  },
+
   ajaxURI: function(path, state) {
     return 'http://' + state.server + path;
   }

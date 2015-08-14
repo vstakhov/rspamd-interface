@@ -28,15 +28,15 @@ var App = React.createClass({
       url: Common.ajaxURI('/auth', this.state),
       data: {password: this.state.password},
       success : function(data) {
-        var state = this.state;
-        state.stage = 'loaded';
-        state.data = data;
-        this.setState(state);
+        this.setState({
+          data: data,
+          stage: 'loaded'
+        });
       }.bind(this),
       error : function() {
-        var state = this.state;
-        state.stage = 'need_auth';
-        this.setState(state);
+        this.setState({
+          stage: 'need_auth'
+        });
       }.bind(this)
     });
   },
@@ -45,6 +45,21 @@ var App = React.createClass({
     if (this.state.stage = 'got_auth') {
       this.loadAjaxData();
     }
+  },
+
+  onLoginFormSubmit: function(server, password) {
+    this.setState({
+      stage: 'got_auth',
+      server: server,
+      password: password
+    })
+  },
+
+  disconnect: function() {
+    Common.cleanCredentials();
+    this.setState({
+      stage: 'need_auth'
+    });
   },
 
   render : function() {
@@ -56,8 +71,9 @@ var App = React.createClass({
           <Nav>
             <NavItem eventKey={1} to="status">Status</NavItem>
             <NavItem eventKey={2} to="configuration">Configuration</NavItem>
-            <NavItem eventKey={2} to="learning">Learning</NavItem>
-            <NavItem eventKey={2} to="history">History</NavItem>
+            <NavItem eventKey={3} to="learning">Learning</NavItem>
+            <NavItem eventKey={4} to="history">History</NavItem>
+            <NavItem eventKey={5} onClick={this.disconnect}>Disconnect</NavItem>
           </Nav>
           </Navbar>
           <RouteHandler/>
@@ -67,7 +83,7 @@ var App = React.createClass({
     } else if (this.state.stage === 'need_auth') {
       /* Show login form */
       return <LoginForm server={this.state.server}
-        password={this.state.password} parent={this}/>;
+        password={this.state.password} onSubmit={this.onLoginFormSubmit}/>;
     }
     else {
       this.loadAjaxData();
