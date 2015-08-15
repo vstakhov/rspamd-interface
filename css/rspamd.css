@@ -225,7 +225,7 @@ input::-webkit-inner-spin-button {
 	.table-log .col9 {
 		width:50px;
 		}
-	.table-log th { 
+	.table-log th {
 		padding:4px 10px;
 		font-size:10px;
 		color:#666666;
@@ -346,7 +346,7 @@ td.maps-cell {
 .loading .spinner {
 	background-position:0 50%;
 	}
-	
+
 /* widget */
 .widget-box {
 	background:none repeat scroll 0 0 #F9F9F9;
@@ -454,9 +454,9 @@ td.maps-cell {
 		margin:0 10px 10px 0;
 		padding:0 10px;
 		}
-	.stat-boxes .stat-box:first-child {
+	/*.stat-boxes .stat-box:first-child {
 		margin-right:0;
-		}
+		}*/
 		.stat-box .widget {
 			overflow:hidden;
 			margin: 0 12px;
@@ -629,7 +629,7 @@ td.maps-cell {
 	display:block;
 	white-space:normal;
 	}
-	
+
 .pager li > a,
 .pager li > span {
   display: inline-block;
