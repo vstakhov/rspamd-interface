@@ -68,17 +68,22 @@ var App = React.createClass({
     if (this.state.stage === 'loaded') {
       return (
         <div>
-          <Navbar brand={<a href="#">Rspamd interface</a>}>
-          <Nav>
+        <div class="container-fluid">
+        <ul class="nav nav-tabs">
+        <Nav bsStyle='pills' activeKey={1}>
             <NavItem eventKey={1} to="status">Status</NavItem>
             <NavItem eventKey={2} to="configuration">Configuration</NavItem>
             <NavItem eventKey={3} to="learning">Learning</NavItem>
             <NavItem eventKey={4} to="history">History</NavItem>
-            <NavItem eventKey={5} onClick={this.disconnect}>Disconnect</NavItem>
-          </Nav>
-          </Navbar>
-          <RouteHandler/>
-          <Dashboard server={this.state.server} password={this.state.password}/>
+            <NavItem eventKey={5} componentClass="nav pull-right"
+              onClick={this.disconnect}>Disconnect</NavItem>
+        </Nav>
+        </ul>
+        </div>
+        <RouteHandler/>
+        <div className="container-fluid">
+          <Dashboard server={this.state.server} password={this.state.password} />
+        </div>
         </div>
       );
     } else if (this.state.stage === 'need_auth') {
