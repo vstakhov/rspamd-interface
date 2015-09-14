@@ -430,7 +430,7 @@
                         }
                         items.push('<tr><td>' + item.time + '</td>' +
                             '<td><div class="cell-overflow" tabindex="1" "title="' + item.id + '">' + item.id + '</td>' +
-                            '<td>' + item.ip + '</td>' +
+                            '<td><div class="cell-overflow" tabindex="1" title="' + item.ip + '">' + item.ip + '</div></td>' +
                             '<td><span class="label ' + action + '">' + item.action + '</span></td>' +
                             '<td><span class="label ' + score + '">' + item.score + ' / ' + item.required_score + '</span></td>' +
                             '<td><div class="cell-overflow" tabindex="1" title="' + item.symbols + '">' + item.symbols + '</div></td>' +
