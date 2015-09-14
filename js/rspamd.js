@@ -432,7 +432,7 @@
                             '<td><div class="cell-overflow" tabindex="1" "title="' + item.id + '">' + item.id + '</td>' +
                             '<td><div class="cell-overflow" tabindex="1" title="' + item.ip + '">' + item.ip + '</div></td>' +
                             '<td><span class="label ' + action + '">' + item.action + '</span></td>' +
-                            '<td><span class="label ' + score + '">' + item.score + ' / ' + item.required_score + '</span></td>' +
+                            '<td><span class="label ' + score + '">' + item.score.toFixed(2) + ' / ' + item.required_score.toFixed(2) + '</span></td>' +
                             '<td><div class="cell-overflow" tabindex="1" title="' + item.symbols + '">' + item.symbols + '</div></td>' +
                             '<td>' + item.size + '</td>' +
                             '<td>' + item.scan_time + '</td>' +
@@ -726,12 +726,12 @@
                         }
                         $('<tbody id="tmpBody"><tr>' +
                             '<td><span class="label ' + action + '">' + data.action + '</span></td>' +
-                            '<td><span class="label ' + score + '">' + data.score + '/' + data.required_score + '</span></td>' +
+                            '<td><span class="label ' + score + '">' + data.score.toFixed(2) + '/' + data.required_score.toFixed(2) + '</span></td>' +
                             '</tr></tbody>')
                             .insertAfter('#scanOutput thead');
                         $.each(data, function (i, item) {
                             if (typeof item == 'object') {
-                                items.push('<div class="cell-overflow" tabindex="1">' + item.name + ': ' + item.score + '</div>');
+                                items.push('<div class="cell-overflow" tabindex="1">' + item.name + ': ' + item.score.toFixed(2) + '</div>');
                             }
                         });
                         $('<td/>', { id: 'tmpSymbols', html: items.join('') }).appendTo('#scanResult');
