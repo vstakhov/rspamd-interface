@@ -1,6 +1,6 @@
 var React = require('react');
 var RspamdPieChart = require('./piechart.jsx');
-var AreaChart = require('react-d3/areachart').AreaChart;
+var RspamdRRDGraph = require('./rrdgraph.jsx');
 var Common = require('../common.js');
 
 var StatBox = React.createClass({
@@ -84,20 +84,19 @@ module.exports = React.createClass({
             </div>
           </div>
           <div className="widget-box">
-  					<div className="widget-title">
-  						<span className="icon"><i className="icon-signal"></i></span>
-  						<h5>Statistics</h5>
-  					</div>
-  					<div className="widget-content chart-content">
-  						<div className="row-fluid row-chart">
-  							<div className="chart" id="chart">
-  								<RspamdPieChart server={this.props.server}
-                                password={this.props.password}/>
-  							</div>
-  						</div>
-  					</div>
-  				</div>
-          {JSON.stringify(this.state.data)}
+            <div className="widget-title">
+              <span className="icon"><i className="icon-signal"></i></span>
+              <h5>Statistics</h5>
+            </div>
+            <div className="widget-content chart-content">
+              <div className="row-fluid row-chart">
+                <div className="chart" id="chart">
+                  <RspamdPieChart server={this.props.server}
+                                  password={this.props.password}/>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       );
     } else {
