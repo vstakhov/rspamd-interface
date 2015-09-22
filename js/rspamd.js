@@ -70,8 +70,8 @@
                 dataType: 'json',
                 type: 'GET',
                 url: 'auth',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 success: function (data) {
                     if (data.auth === 'failed') {
@@ -86,8 +86,8 @@
                 dataType: 'json',
                 type: 'GET',
                 url: 'auth',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 success: function (data) {
                     saveCredentials(data, password);
@@ -172,8 +172,8 @@
             $.ajax({
                 dataType: 'json',
                 url: 'maps',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 error: function () {
                     alertMessage('alert-modal alert-error', data.statusText);
@@ -212,11 +212,12 @@
         }
         // @get map by id
         function getMapById(mode) {
+            var data;
             if (!supportsSessionStorage()) {
-                var data = $.cookie('rspamdmaps', data, { expires: 1 }, { path: '/' });
+                data = $.cookie('rspamdmaps', data, { expires: 1 }, { path: '/' });
             }
             else {
-                var data = JSON.parse(sessionStorage.getItem('Maps'));
+                data = JSON.parse(sessionStorage.getItem('Maps'));
             }
             if (mode === 'update') {
                 $('#modalBody').empty();
@@ -227,19 +228,18 @@
                     dataType: 'text',
                     url: 'getmap',
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Password', getPassword()),
-                            xhr.setRequestHeader('Map', item.map);
+                        xhr.setRequestHeader('Password', getPassword());
+                        xhr.setRequestHeader('Map', item.map);
                     },
                     error: function () {
                         alertMessage('alert-error', 'Cannot receive maps data');
                     },
                     success: function (text) {
+                        var disabled = '';
                         if ((item.editable == false)) {
-                            var disabled = 'disabled="disabled"';
+                            disabled = 'disabled="disabled"';
                         }
-                        else {
-                            var disabled = '';
-                        }
+
                         $('<form class="form-horizontal form-map" method="post "action="/savemap" data-type="map" id="'
                             + item.map + '" style="display:none">' +
                             '<textarea class="list-textarea"' + disabled + '>' + text
@@ -282,30 +282,32 @@
             var widgets = $('#statWidgets');
             updateCredentials();
             $(widgets).empty().hide();
+            var data;
             if (!supportsSessionStorage()) {
-                var data = $.cookie('rspamdsession');
+                data = $.cookie('rspamdsession');
             }
             else {
-                var data = JSON.parse(sessionStorage.getItem('Credentials'));
+                data = JSON.parse(sessionStorage.getItem('Credentials'));
             }
             var stat_w = [];
             $.each(data, function (i, item) {
+                var widget = '';
                 if (i == 'auth') {
                 }
                 else if (i == 'error') {
                 }
                 else if (i == 'version') {
-                    var widget = '<div class="left"><strong>' + item + '</strong>' +
+                    widget = '<div class="left"><strong>' + item + '</strong>' +
                         i + '</div>';
                     $(widget).appendTo(widgets);
                 }
                 else if (i == 'uptime') {
-                    var widget = '<div class="right"><strong>' + msToTime(item) +
+                    widget = '<div class="right"><strong>' + msToTime(item) +
                         '</strong>' + i + '</div>';
                     $(widget).appendTo(widgets);
                 }
                 else {
-                    var widget = '<li class="stat-box"><div class="widget"><strong>' +
+                    widget = '<li class="stat-box"><div class="widget"><strong>' +
                         item + '</strong>' + i + '</div></li>';
                     if (i == 'scanned') {
                         stat_w[0] = widget;
@@ -359,8 +361,8 @@
                 dataType: 'json',
                 type: 'GET',
                 url: 'pie',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 success: function (data) {
                     var testdata = [
@@ -405,8 +407,8 @@
             $.ajax({
                 dataType: 'json',
                 url: 'history',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 error: function () {
                     alertMessage('alert-error', 'Cannot receive history');
@@ -439,10 +441,13 @@
                             '<td><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user + '</div></td></tr>');
                     });
                     $('<tbody/>', { html: items.join('') }).insertAfter('#historyLog thead');
-                    $('#historyLog').tablesorter({ sortList: [[0, 1]] }).paginateTable({ rowsPerPage: 20 }, { textExtraction: function (node) {
-                            var pat = /^[0-9]+/;
-                            return pat.exec(node.innerHTML);
-                        } });
+                    $('#historyLog').tablesorter({sortList: [[0, 1]] })
+                        .paginateTable({ rowsPerPage: 20 }, { textExtraction:
+                            function (node) {
+                                var pat = /^[0-9]+/;
+                                return pat.exec(node.innerHTML);
+                            }
+                        });
                 }
             });
         }
@@ -462,8 +467,8 @@
                 dataType: 'json',
                 type: 'GET',
                 url: 'symbols',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 success: function (data) {
                     $('#modalBody').empty();
@@ -594,9 +599,10 @@
                     }
                 }
             });
-            var data = new Object();
-            data.flag = $('#fuzzyFlagUpload').val();
-            data.weight = $('#fuzzyWeightUpload').val();
+            var data = {
+                flag: $('#fuzzyFlagUpload').val(),
+                weight: $('#fuzzyWeightUpload').val()
+            };
             var fuzzyUploader = new qq.FineUploader({
                 element: $('#uploadFuzzyFiles')[0],
                 request: {
@@ -655,17 +661,15 @@
             if (source === 'spam') {
                 var url = 'learnspam';
             }
-            if (source === 'ham') {
+            else if (source === 'ham') {
                 var url = 'learnham';
             }
-            if (source == 'fuzzy') {
+            else if (source == 'fuzzy') {
                 var url = 'learnfuzzy';
             }
-            ;
-            if (source === 'scan') {
+            else if (source === 'scan') {
                 var url = 'scan';
             }
-            ;
             $.ajax({
                 data: data,
                 dataType: 'json',
@@ -771,15 +775,17 @@
         // @init upload
         $('[data-upload]').on('click', function () {
             var source = $(this).data('upload');
+            var data;
             if (source == 'fuzzy') {
                 //To access the proper
-                var data = new String($('#' + source + 'TextSource').val());
+                data = new String($('#' + source + 'TextSource').val());
                 data.flag = $('#fuzzyFlagText').val();
                 data.weigth = $('#fuzzyWeightText').val();
                 data.string = data.toString();
             }
-            else
-                var data = $('#' + source + 'TextSource').val();
+            else {
+                data = $('#' + source + 'TextSource').val();
+            }
             if (data.length > 0) {
                 if (source == 'scan') {
                     scanText(data);
@@ -801,8 +807,8 @@
                 dataType: 'json',
                 type: 'GET',
                 url: 'actions',
-                beforeSend: function (xhr) {
-                    xhr.setRequestHeader('Password', getPassword());
+                data: {
+                    password: getPassword()
                 },
                 success: function (data) {
                     // Order of sliders greylist -> probable spam -> spam
@@ -813,16 +819,17 @@
                     var max = Number.MIN_VALUE;
                     $.each(data, function (i, item) {
                         var idx = -1;
+                        var label;
                         if (item.action === 'add header') {
-                            var label = 'Probably Spam';
+                            label = 'Probably Spam';
                             idx = 1;
                         }
                         else if (item.action === 'greylist') {
-                            var label = 'Greylist';
+                            label = 'Greylist';
                             idx = 0;
                         }
                         else if (item.action === 'reject') {
-                            var label = 'Spam';
+                            label = 'Spam';
                             idx = 2;
                         }
                         if (idx >= 0) {
@@ -972,8 +979,8 @@
                     dataType: 'json',
                     type: 'GET',
                     url: 'auth',
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader('Password', password);
+                    data: {
+                        password: getPassword()
                     },
                     success: function (data) {
                         if (data.auth === 'failed') {
