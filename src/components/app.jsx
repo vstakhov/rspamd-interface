@@ -68,8 +68,8 @@ var App = React.createClass({
     if (this.state.stage === 'loaded') {
       return (
         <div>
-        <div class="container-fluid">
-        <ul class="nav nav-tabs">
+        <div className="container-fluid">
+        <ul className="nav nav-tabs">
         <Nav bsStyle='pills' activeKey={1}>
             <NavItem eventKey={1} to="status">Status</NavItem>
             <NavItem eventKey={2} to="configuration">Configuration</NavItem>
