@@ -391,13 +391,13 @@
                             "location": "bottom-left"
                         },
                         "size": {
-                            "canvasWidth": 450,
+                            "canvasWidth": 600,
                             "canvasHeight": 400,
                             "pieInnerRadius": "20%",
-                            "pieOuterRadius": "90%"
+                            "pieOuterRadius": "85%"
                         },
                         "data": {
-                            "sortOrder": "value-desc",
+                            //"sortOrder": "value-desc",
                             "content": data.filter(function(elt) {
                                 return elt.value > 0;
                             })
@@ -405,21 +405,18 @@
                         "labels": {
                             "outer": {
                                 "hideWhenLessThanPercentage": 1,
-                                "pieDistance": 20
+                                "pieDistance": 30
                             },
                             "inner": {
-                                "hideWhenLessThanPercentage": 3
+                                "hideWhenLessThanPercentage": 4
                             },
                             "mainLabel": {
-                                "fontSize": 11
+                                "fontSize": 14
                             },
                             "percentage": {
-                                "color": "#ffffff",
-                                "decimalPlaces": 1
-                            },
-                            "value": {
-                                "color": "#adadad",
-                                "fontSize": 11
+                                "color": "#eeeeee",
+                                "fontSize": 14,
+                                "decimalPlaces": 0
                             },
                             "lines": {
                                 "enabled": true
@@ -438,6 +435,9 @@
                                 "effect": "back",
                                 "speed": 400,
                                 "size": 8
+                            },
+                            "load": {
+                                "speed": 500
                             }
                         },
                         "misc": {
