@@ -980,7 +980,7 @@
                     type: 'GET',
                     url: 'auth',
                     data: {
-                        password: getPassword()
+                        password: password
                     },
                     success: function (data) {
                         if (data.auth === 'failed') {
