@@ -47,7 +47,7 @@ textarea {
 	text-align:center;
 	}
 	.chart {
-		height:400px;
+		height:500px;
 		margin:0 auto;
 		text-align:center;
 		background:#fff;
@@ -60,7 +60,7 @@ textarea {
 	}
 
 .form-sliders .control-label {
-	width:240px;
+	width:340px;
 	}
 	.form-sliders .controls {
 		margin-left:280px;

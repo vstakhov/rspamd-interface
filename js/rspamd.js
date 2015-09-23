@@ -18,6 +18,7 @@
     $(document).ready(function () {
         // begin
         $.cookie.json = true;
+        var pie;
         $('#disconnect').on('click', function (event) {
             cleanCredentials();
             connectRSPAMD();
@@ -26,6 +27,7 @@
         });
         $('#refresh').on('click', function (event) {
             statWidgets();
+            getChart();
         });
         // @supports session storage
         function supportsSessionStorage() {
@@ -365,21 +367,84 @@
                     password: getPassword()
                 },
                 success: function (data) {
-                    var testdata = [
-                        { label: "Series A", data: 0.2063 },
-                        { label: "Series B", data: 38888 }
-                    ];
-                    $(function () {
-                        $.plot($("#chart"), data, {
-                            series: {
-                                pie: {
-                                    show: true
-                                }
+                    if (pie) {
+                        pie.destroy();
+                    }
+                    pie = new d3pie("chart", {
+                        "header": {
+                            "title": {
+                                "text": "Rspamd filter stats",
+                                "fontSize": 24,
+                                "font": "open sans"
                             },
-                            legend: {
-                                show: false
+                            "subtitle": {
+                                "color": "#999999",
+                                "fontSize": 12,
+                                "font": "open sans"
+                            },
+                            "titleSubtitlePadding": 9
+                        },
+                        "footer": {
+                            "color": "#999999",
+                            "fontSize": 10,
+                            "font": "open sans",
+                            "location": "bottom-left"
+                        },
+                        "size": {
+                            "canvasWidth": 500,
+                            "pieInnerRadius": "20%",
+                            "pieOuterRadius": "80%"
+                        },
+                        "data": {
+                            "sortOrder": "value-desc",
+                            "content": data.filter(function(elt) {
+                                return elt.value > 0;
+                            })
+                        },
+                        "labels": {
+                            "outer": {
+                                "hideWhenLessThanPercentage": 1,
+                                "pieDistance": 20
+                            },
+                            "inner": {
+                                "hideWhenLessThanPercentage": 3
+                            },
+                            "mainLabel": {
+                                "fontSize": 11
+                            },
+                            "percentage": {
+                                "color": "#ffffff",
+                                "decimalPlaces": 1
+                            },
+                            "value": {
+                                "color": "#adadad",
+                                "fontSize": 11
+                            },
+                            "lines": {
+                                "enabled": true
+                            },
+                            "truncation": {
+                                "enabled": true
                             }
-                        });
+                        },
+                        "tooltips": {
+                            "enabled": true,
+                            "type": "placeholder",
+                            "string": "{label}: {value}, {percentage}%"
+                        },
+                        "effects": {
+                            "pullOutSegmentOnClick": {
+                                "effect": "back",
+                                "speed": 400,
+                                "size": 8
+                            }
+                        },
+                        "misc": {
+                            "gradient": {
+                                "enabled": true,
+                                "percentage": 100
+                            }
+                        }
                     });
                 }
             });
