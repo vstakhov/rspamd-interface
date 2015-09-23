@@ -391,9 +391,10 @@
                             "location": "bottom-left"
                         },
                         "size": {
-                            "canvasWidth": 500,
+                            "canvasWidth": 450,
+                            "canvasHeight": 400,
                             "pieInnerRadius": "20%",
-                            "pieOuterRadius": "80%"
+                            "pieOuterRadius": "90%"
                         },
                         "data": {
                             "sortOrder": "value-desc",
