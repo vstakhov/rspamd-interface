@@ -17,7 +17,7 @@
 (function () {
     $(document).ready(function () {
         // begin
-        $.cookie.json = true;
+        //$.cookie.json = true;
         var pie;
         $('#disconnect').on('click', function (event) {
             cleanCredentials();
@@ -496,24 +496,20 @@
                         if (item.score >= item.required_score) {
                             var score = 'label-important';
                         }
-                        items.push('<tr><td>' + item.time + '</td>' +
-                            '<td><div class="cell-overflow" tabindex="1" "title="' + item.id + '">' + item.id + '</td>' +
-                            '<td><div class="cell-overflow" tabindex="1" title="' + item.ip + '">' + item.ip + '</div></td>' +
-                            '<td><span class="label ' + action + '">' + item.action + '</span></td>' +
-                            '<td><span class="label ' + score + '">' + item.score.toFixed(2) + ' / ' + item.required_score.toFixed(2) + '</span></td>' +
-                            '<td><div class="cell-overflow" tabindex="1" title="' + item.symbols + '">' + item.symbols + '</div></td>' +
-                            '<td>' + item.size + '</td>' +
-                            '<td>' + item.scan_time + '</td>' +
-                            '<td><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user + '</div></td></tr>');
+
+                        items.push(
+                            '<tr><td data-order="' + item.unix_time + '">' + item.time + '</td>' +
+                            '<td data-order="' + item.id + '"><div class="cell-overflow" tabindex="1" title="' + item.id + '">' + item.id + '</td>' +
+                            '<td data-order="' + item.ip + '"><div class="cell-overflow" tabindex="1" title="' + item.ip + '">' + item.ip + '</div></td>' +
+                            '<td data-order="' + item.action + '"><span class="label ' + action + '">' + item.action + '</span></td>' +
+                            '<td data-order="' + item.score + '"><span class="label ' + score + '">' + item.score.toFixed(2) + ' / ' + item.required_score.toFixed(2) + '</span></td>' +
+                            '<td data-order="' + item.symbols + '"><div class="cell-overflow" tabindex="1" title="' + item.symbols + '">' + item.symbols + '</div></td>' +
+                            '<td data-order="' + item.size + '">' + item.size + '</td>' +
+                            '<td data-order="' + item.scan_time + '">' + item.scan_time + '</td>' +
+                            '<td data-order="' + item.user + '"><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user + '</div></td></tr>');
                     });
                     $('<tbody/>', { html: items.join('') }).insertAfter('#historyLog thead');
-                    $('#historyLog').tablesorter({sortList: [[0, 1]] })
-                        .paginateTable({ rowsPerPage: 20 }, { textExtraction:
-                            function (node) {
-                                var pat = /^[0-9]+/;
-                                return pat.exec(node.innerHTML);
-                            }
-                        });
+                    $('#historyLog').DataTable();
                 }
             });
         }
