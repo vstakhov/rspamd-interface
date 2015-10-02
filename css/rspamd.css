@@ -358,16 +358,6 @@ td.maps-cell {
 	margin-bottom:16px;
 	position:relative;
 	}
-.widget-box {
-	background:none repeat scroll 0 0 #F9F9F9;
-	border-top:1px solid #CDCDCD;
-	border-left:1px solid #CDCDCD;
-	border-right:1px solid #CDCDCD;
-	clear:both;
-	margin-top:16px;
-	margin-bottom:16px;
-	position:relative;
-	}
 .widget-box.widget-calendar, .widget-box.widget-chat {
 	overflow:hidden !important;
 	}
@@ -413,7 +403,7 @@ td.maps-cell {
 	}
 .widget-title .buttons {
 	float:left;
-	margin:7px 7px 0 0;
+	margin:0px 0px 0 0;
 	}
 .widget-title .label {
 	padding:3px 5px 2px;

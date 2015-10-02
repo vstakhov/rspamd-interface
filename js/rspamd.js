@@ -19,6 +19,7 @@
         // begin
         //$.cookie.json = true;
         var pie;
+        var history;
         $('#disconnect').on('click', function (event) {
             cleanCredentials();
             connectRSPAMD();
@@ -509,7 +510,9 @@
                             '<td data-order="' + item.user + '"><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user + '</div></td></tr>');
                     });
                     $('<tbody/>', { html: items.join('') }).insertAfter('#historyLog thead');
-                    $('#historyLog').DataTable();
+                    history = $('#historyLog').DataTable({
+                        "order": [[ 0, "desc" ]]
+                    });
                 }
             });
         }
@@ -576,16 +579,9 @@
         }
         // @update history log
         $('#updateHistory').on('click', function () {
-            $(this).addClass('loading');
-            var target = '#historyLog';
-            var height = $(target).height();
-            $(target).parent().css('height', height);
-            $(target).children('tbody').remove();
-            setTimeout(function () {
-                getHistory();
-                $(target).fadeIn();
-            }, 1200);
-            $(target).parent().removeAttr('style');
+            history.destroy();
+            $('#historyLog').children('tbody').remove();
+            getHistory();
         });
         // @spam upload form
         function createUploaders() {
