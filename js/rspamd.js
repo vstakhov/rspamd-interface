@@ -21,6 +21,12 @@
         var pie;
         var history;
         $('#disconnect').on('click', function (event) {
+            if (pie) {
+                pie.destroy();
+            }
+            if (history) {
+                history.destroy();
+            }
             cleanCredentials();
             connectRSPAMD();
             // window.location.reload();
@@ -188,14 +194,14 @@
                     $.each(data, function (i, item) {
                         if ((item.editable == false)) {
                             var caption = 'View';
-                            var label = '<span class="label">Read</span>';
+                            var label = '<span class="label label-default">Read</span>';
                         }
                         else {
                             var caption = 'Edit';
-                            var label = '<span class="label">Read</span>&nbsp;<span class="label label-success">Write</span>';
+                            var label = '<span class="label label-default">Read</span>&nbsp;<span class="label label-success">Write</span>';
                         }
                         items.push('<tr>' +
-                            '<td class="span2 maps-cell">' + label + '</td>' +
+                            '<td class="col-md-2 maps-cell">' + label + '</td>' +
                             '<td>' +
                             '<span class="map-link" ' +
                             'data-source="#' + item.map + '" ' +
@@ -489,13 +495,13 @@
                             var action = 'label-warning';
                         }
                         if (item.action === 'spam') {
-                            var action = 'label-important';
+                            var action = 'label-danger';
                         }
                         if (item.score <= item.required_score) {
                             var score = 'label-success';
                         }
                         if (item.score >= item.required_score) {
-                            var score = 'label-important';
+                            var score = 'label-danger';
                         }
 
                         items.push(
@@ -538,7 +544,7 @@
                 success: function (data) {
                     $('#modalBody').empty();
                     $.each(data, function (i, group) {
-                        items.push('	<div class="row-fluid row-bordered" data-slider="hover">' +
+                        items.push('	<div class="row row-bordered" data-slider="hover">' +
                             '<h4>' + group.group + '</h4>' +
                             '</div>');
                         $.each(group.rules, function (i, item) {
@@ -550,11 +556,11 @@
                             if (item.weight < min) {
                                 min = item.weight * 2;
                             }
-                            items.push('	<div class="row-fluid row-bordered" data-slider="hover">' +
-                                '<label class="span7" for="' + item.symbol + '" title="' + item.description + '">' +
+                            items.push('	<div class="row row-bordered" data-slider="hover">' +
+                                '<label class="col-md-7" for="' + item.symbol + '" title="' + item.description + '">' +
                                 '<code>' + item.symbol + '</code><p class="symbol-description">' + item.description + '</p>' +
                                 '</label>' +
-                                '<div class="span3 spin-cell">' +
+                                '<div class="col-md-3 spin-cell">' +
                                 '<input class="numeric" data-role="numerictextbox" autocomplete="off" "type="number" class="input-mini" min="' +
                                 min + '" max="' +
                                 max + '" step="' + decimalStep(item.weight) +
@@ -599,7 +605,7 @@
                 },
                 autoUpload: false,
                 text: {
-                    uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+                    uploadButton: '<i class="glyphicon glyphicon-plus glyphicon-white"></i> Select Files'
                 },
                 retry: {
                     enableAuto: false
@@ -635,7 +641,7 @@
                 },
                 autoUpload: false,
                 text: {
-                    uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+                    uploadButton: '<i class="glyphicon glyphicon-plus glyphicon-white"></i> Select Files'
                 },
                 retry: {
                     enableAuto: true
@@ -675,7 +681,7 @@
                 },
                 autoUpload: false,
                 text: {
-                    uploadButton: '<i class="icon-plus icon-white"></i> Select Files'
+                    uploadButton: '<i class="glyphicon glyphicon-plus glyphicon-white"></i> Select Files'
                 },
                 retry: {
                     enableAuto: true
@@ -778,13 +784,13 @@
                             var action = 'label-warning';
                         }
                         if (data.action === 'spam') {
-                            var action = 'label-important';
+                            var action = 'label-danger';
                         }
                         if (data.score <= data.required_score) {
                             var score = 'label-success';
                         }
                         if (data.score >= data.required_score) {
-                            var score = 'label-important';
+                            var score = 'label-danger';
                         }
                         $('<tbody id="tmpBody"><tr>' +
                             '<td><span class="label ' + action + '">' + data.action + '</span></td>' +
@@ -892,9 +898,9 @@
                         }
                         if (idx >= 0) {
                             items[idx] =
-                                '<div class="control-group">' +
-                                    '<label class="control-label">' + label + '</label>' +
-                                    '<div class="controls slider-controls">' +
+                                '<div class="form-group">' +
+                                    '<label class="control-label col-sm-2">' + label + '</label>' +
+                                    '<div class="controls slider-controls col-sm-10">' +
                                     '<input class="slider" type="slider" value="' + item.value + '">' +
                                     '</div>' +
                                     '</div>';
@@ -906,8 +912,10 @@
                             min = item.value;
                         }
                     });
-                    $('<form/>', { id: 'actionsForm', class: 'form-horizontal', html: items.join('') }).appendTo('#actionsBody');
-                    $('<br><div class="control-group"><div class="controls slider-controls"><button class="btn" type="submit">Save actions</button</p></div></div>').appendTo('#actionsForm');
+                    $('<form/>', { id: 'actionsForm', class: '', html: items.join('') }).appendTo('#actionsBody');
+                    $('<br><div class="form-group">' +
+                        '<button class="btn btn-primary" ' +
+                        'type="submit">Save actions</button></div>').appendTo('#actionsForm');
                 }
             });
         }
@@ -1043,7 +1051,7 @@
                     success: function (data) {
                         if (data.auth === 'failed') {
                             $(form).each(function () {
-                                $('.control-group').addClass('error');
+                                $('.form-group').addClass('error');
                             });
                         }
                         else {
