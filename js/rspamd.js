@@ -584,6 +584,25 @@
             });
         }
         // @update history log
+        $('#resetHistory').on('click', function () {
+            history.destroy();
+            $('#historyLog').children('tbody').remove();
+            $.ajax({
+                dataType: 'json',
+                type: 'GET',
+                url: 'historyreset',
+                data: {
+                    password: getPassword()
+                },
+                success: function (data) {
+                    getHistory();
+                },
+                error: function (data) {
+                    alertMessage('alert-modal alert-error', data.statusText);
+                }
+            });
+        });
+        // @reset history log
         $('#updateHistory').on('click', function () {
             history.destroy();
             $('#historyLog').children('tbody').remove();
