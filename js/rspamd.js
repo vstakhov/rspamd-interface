@@ -69,16 +69,7 @@
                 return false;
             }
         }
-        $(function () {
-            var hash = window.location.hash;
-            hash && $('a[href="' + hash + '"]').tab('show');
-            $('a[data-toggle]').on('click', function (e) {
-                $(this).tab('show');
-                // @var scrollmem = $('body').scrollTop();
-                window.location.hash = this.hash;
-                $('html,body').scrollTop(0);
-            });
-        });
+
         // @detect session storate
         supportsSessionStorage();
         // @request credentials
@@ -1116,6 +1107,8 @@
         $(document).ajaxComplete(function () {
             $('#navBar').removeClass('loading');
         });
-        // end
+        $('#status_nav').bind('click', function (e) {
+            getChart();
+        });
     });
 })();
