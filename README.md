@@ -13,17 +13,17 @@ viewing statistic and learning.
 It is required to configure dynamic settings to store configured values.
 Basically this can be done by providing the following line in options settings:
 
-{% highlight nginx %}
+~~~nginx
 options {
  dynamic_conf = "/var/lib/rspamd/rspamd_dynamic";
 }
-{% endhighlight %}
+~~~
 
 Please note that this path must have write access for rspamd user.
 
 Then controller worker should be configured:
 
-{% highlight nginx %}
+~~~nginx
 worker {
         type = "controller";
         bind_socket = "localhost:11334";
@@ -35,7 +35,7 @@ worker {
         # Path to webiu static files
         static_dir = "${WWWDIR}";
 }
-{% endhighlight %}
+~~~
 
 Password option should be changed for sure for your specific configuration. Encrypted password using is encouraged (`rspamadm pw --encrypt`).
 
