@@ -487,13 +487,13 @@
                 },
                 success: function (data) {
                     $.each(data, function (i, item) {
-                        if (item.action === 'clean' || 'no action') {
+                        if (item.action === 'clean' || item.action === 'no action') {
                             var action = 'label-success';
                         }
-                        if (item.action === 'rewrite subject' || 'add header' || 'probable spam') {
+                        if (item.action === 'rewrite subject' || item.action === 'add header' || item.action === 'probable spam') {
                             var action = 'label-warning';
                         }
-                        if (item.action === 'spam') {
+                        if (item.action === 'spam' || item.action === 'reject') {
                             var action = 'label-danger';
                         }
                         if (item.score <= item.required_score) {
