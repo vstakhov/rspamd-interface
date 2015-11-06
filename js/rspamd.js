@@ -518,7 +518,7 @@
                             '<td data-order="' + item.score + '"><span class="label ' + score + '">' + item.score.toFixed(2) + ' / ' + item.required_score.toFixed(2) + '</span></td>' +
                             '<td data-order="' + item.symbols + '"><div class="cell-overflow" tabindex="1" title="' + item.symbols + '">' + item.symbols + '</div></td>' +
                             '<td data-order="' + item.size + '">' + item.size + '</td>' +
-                            '<td data-order="' + item.scan_time + '">' + item.scan_time + '</td>' +
+                            '<td data-order="' + item.scan_time + '">' + item.scan_time.toFixed(3) + '</td>' +
                             '<td data-order="' + item.user + '"><div class="cell-overflow" tabindex="1" "title="' + item.user + '">' + item.user + '</div></td></tr>');
                     });
                     $('<tbody/>', { html: items.join('') }).insertAfter('#historyLog thead');
