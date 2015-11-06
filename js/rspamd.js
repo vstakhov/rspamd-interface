@@ -487,20 +487,27 @@
                 },
                 success: function (data) {
                     $.each(data, function (i, item) {
+                        var action;
+
                         if (item.action === 'clean' || item.action === 'no action') {
-                            var action = 'label-success';
+                            action = 'label-success';
                         }
-                        if (item.action === 'rewrite subject' || item.action === 'add header' || item.action === 'probable spam') {
-                            var action = 'label-warning';
+                        else if (item.action === 'rewrite subject' || item.action === 'add header' || item.action === 'probable spam') {
+                            action = 'label-warning';
                         }
-                        if (item.action === 'spam' || item.action === 'reject') {
-                            var action = 'label-danger';
+                        else if (item.action === 'spam' || item.action === 'reject') {
+                            action = 'label-danger';
                         }
-                        if (item.score <= item.required_score) {
-                            var score = 'label-success';
+                        else {
+                            action = 'label-info';
                         }
-                        if (item.score >= item.required_score) {
-                            var score = 'label-danger';
+
+                        var score;
+                        if (item.score < item.required_score) {
+                            score = 'label-success';
+                        }
+                        else {
+                            score = 'label-danger';
                         }
 
                         items.push(
